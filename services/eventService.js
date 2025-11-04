@@ -2,6 +2,7 @@ const { ObjectId } = require('mongodb');
 const database = require('../utils/database');
 const cache = require('../utils/cache');
 const { AppError, DatabaseError } = require('../utils/errorHandler');
+const { sendRegistrationConfirmation } = require('../utils/email');
 const winston = require('winston');
 
 // Create a logger instance
@@ -186,6 +187,38 @@ class EventService {
     }
   }
 
+  // Update registration payment status
+  async updateRegistrationPaymentStatus(registrationId, paymentStatus, paymentMethod) {
+    try {
+      // Validate ObjectId
+      if (!ObjectId.isValid(registrationId)) {
+        throw new AppError('Invalid registration ID', 400);
+      }
+      
+      const result = await this.registrationsCollection.updateOne(
+        { _id: new ObjectId(registrationId) },
+        { 
+          $set: { 
+            paymentStatus: paymentStatus,
+            paymentMethod: paymentMethod,
+            updatedAt: new Date()
+          } 
+        }
+      );
+      
+      if (result.matchedCount === 0) {
+        throw new AppError('Registration not found', 404);
+      }
+      
+      logger.info('Registration payment status updated successfully', { registrationId, paymentStatus });
+      return result;
+    } catch (error) {
+      if (error instanceof AppError) throw error;
+      logger.error('Error updating registration payment status:', error);
+      throw new DatabaseError('Failed to update registration payment status');
+    }
+  }
+
   // Delete an event
   async deleteEvent(eventId) {
     try {
@@ -233,10 +266,19 @@ class EventService {
       
       const result = await this.registrationsCollection.insertOne(registration);
       
+      // Send registration confirmation email
+      try {
+        const event = await this.getEventById(registrationData.eventId);
+        await sendRegistrationConfirmation(registrationData.studentEmail, event);
+      } catch (emailError) {
+        logger.error('Error sending registration confirmation email:', emailError);
+      }
+      
       logger.info('Event registration created', { 
         registrationId: result.insertedId,
         eventId: registrationData.eventId,
         studentEmail: registrationData.studentEmail,
+        userType: registrationData.userType,
         paymentStatus: registration.paymentStatus
       });
       

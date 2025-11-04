@@ -8003,3 +8003,4 @@
 {"level":"info","message":"Using in-memory cache instead of Redis","service":"campus-event-hub-cache","timestamp":"2025-11-04T06:59:54.508Z"}
 {"level":"info","message":"Using in-memory cache instead of Redis","service":"campus-event-hub-cache","timestamp":"2025-11-04T07:02:54.896Z"}
 {"level":"info","message":"Using in-memory cache instead of Redis","service":"campus-event-hub-cache","timestamp":"2025-11-04T07:04:29.056Z"}
+{"level":"info","message":"Using in-memory cache instead of Redis","service":"campus-event-hub-cache","timestamp":"2025-11-04T14:31:05.436Z"}

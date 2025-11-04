@@ -347,7 +347,7 @@
             
             <div class="dashboard-section">
                 <h2 class="section-title">Create New Event</h2>
-                <form action="/organizer/create-event" method="POST" id="createEventForm">
+                <form action="/organizer/create-event" method="POST" id="createEventForm" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="title">Event Title</label>
                         <input type="text" id="title" name="title" required placeholder="Enter event title">
@@ -378,6 +378,18 @@
                     <div class="form-group">
                         <label for="organizer">Organizer Name</label>
                         <input type="text" id="organizer" name="organizer" value="Guest Organizer" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="images">Event Images</label>
+                        <input type="file" id="images" name="images" multiple accept="image/*">
+                        <small class="form-text text-muted">Select one or more images for your event (JPG, PNG, GIF)</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="videos">Event Videos</label>
+                        <input type="file" id="videos" name="videos" multiple accept="video/*">
+                        <small class="form-text text-muted">Select one or more videos for your event (MP4, MOV, AVI)</small>
                     </div>
                     
                     <button type="submit" class="btn btn-primary" id="submitBtn">Create Event</button>

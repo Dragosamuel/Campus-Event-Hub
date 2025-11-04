@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= event.title %> - Campus Event Hub</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .event-details-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2.5rem;
+        }
+        
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .event-title {
+            margin: 0;
+            color: #007bff;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .event-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+        
+        .event-main {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.09);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .event-sidebar {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.09);
+            border: 1px solid rgba(0,0,0,0.05);
+            align-self: start;
+        }
+        
+        .event-description {
+            margin-bottom: 2rem;
+            line-height: 1.7;
+            color: #495057;
+            font-size: 1.1rem;
+        }
+        
+        .event-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .info-card {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+        
+        .info-card h3 {
+            margin-top: 0;
+            color: #007bff;
+            font-size: 1.2rem;
+        }
+        
+        .info-card p {
+            margin: 0.5rem 0;
+            color: #495057;
+        }
+        
+        .media-section {
+            margin: 2rem 0;
+        }
+        
+        .media-section h3 {
+            color: #007bff;
+            margin-bottom: 1rem;
+        }
+        
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .media-item {
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            height: 150px;
+        }
+        
+        .media-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .media-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .event-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.3s ease;
+            min-height: 44px;
+        }
+        
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #545b62;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background-color: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+        
+        .sidebar-section h3 {
+            margin-top: 0;
+            color: #007bff;
+            font-size: 1.3rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.75rem;
+        }
+        
+        .organizer-info p {
+            margin: 0.5rem 0;
+            color: #495057;
+        }
+        
+        .social-sharing {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .sharing-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .sharing-buttons a {
+            flex: 1;
+            padding: 0.5rem;
+            text-align: center;
+            border-radius: 4px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            min-width: 80px;
+        }
+        
+        .facebook {
+            background-color: #3b5998;
+        }
+        
+        .twitter {
+            background-color: #1da1f2;
+        }
+        
+        .whatsapp {
+            background-color: #25d366;
+        }
+        
+        @media (max-width: 992px) {
+            .event-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .event-sidebar {
+                order: -1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .event-details-container {
+                padding: 1.5rem;
+            }
+            
+            .event-title {
+                font-size: 1.7rem;
+            }
+            
+            .event-main, .event-sidebar {
+                padding: 1.5rem;
+            }
+            
+            .media-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .media-item {
+                height: 120px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .event-details-container {
+                padding: 1rem;
+            }
+            
+            .event-title {
+                font-size: 1.5rem;
+            }
+            
+            .event-main, .event-sidebar {
+                padding: 1.25rem;
+            }
+            
+            .event-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .media-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .media-item {
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('header') %>
+    
+    <main>
+        <section class="event-details-container">
+            <div class="event-header">
+                <h1 class="event-title"><%= event.title %></h1>
+                <a href="/events" class="btn btn-secondary">← Back to Events</a>
+            </div>
+            
+            <div class="event-content">
+                <div class="event-main">
+                    <div class="event-description">
+                        <p><%= event.description %></p>
+                    </div>
+                    
+                    <div class="event-info">
+                        <div class="info-card">
+                            <h3>Date & Time</h3>
+                            <p><strong>Date:</strong> <%= event.date %></p>
+                            <p><strong>Time:</strong> <%= event.time %></p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>Location</h3>
+                            <p><%= event.location %></p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>Organizer</h3>
+                            <p><%= event.organizer %></p>
+                        </div>
+                    </div>
+                    
+                    <% if ((event.images && event.images.length > 0) || (event.videos && event.videos.length > 0)) { %>
+                    <div class="media-section">
+                        <h3>Event Media</h3>
+                        <div class="media-grid">
+                            <% if (event.images) { %>
+                                <% event.images.forEach(function(image) { %>
+                                    <div class="media-item">
+                                        <img src="<%= image %>" alt="Event image" loading="lazy">
+                                    </div>
+                                <% }); %>
+                            <% } %>
+                            
+                            <% if (event.videos) { %>
+                                <% event.videos.forEach(function(video) { %>
+                                    <div class="media-item">
+                                        <video controls>
+                                            <source src="<%= video %>" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                <% }); %>
+                            <% } %>
+                        </div>
+                    </div>
+                    <% } %>
+                    
+                    <div class="event-actions">
+                        <a href="/register/<%= event._id %>" class="btn btn-primary">Register for Event</a>
+                        <a href="/feedback/<%= event._id %>" class="btn btn-secondary">Give Feedback</a>
+                        <% if (user && user.role === 'organizer') { %>
+                            <a href="/organizer/event/<%= event._id %>/registrations" class="btn btn-info">View Registrations</a>
+                            <a href="/organizer/edit-event/<%= event._id %>" class="btn btn-secondary">Edit Event</a>
+                        <% } %>
+                    </div>
+                </div>
+                
+                <div class="event-sidebar">
+                    <div class="sidebar-section">
+                        <h3>Event Details</h3>
+                        <div class="organizer-info">
+                            <p><strong>Created:</strong> <%= new Date(event.createdAt).toLocaleDateString() %></p>
+                            <p><strong>Last Updated:</strong> <%= new Date(event.updatedAt).toLocaleDateString() %></p>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-section social-sharing">
+                        <h3>Share Event</h3>
+                        <div class="sharing-buttons">
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent('http://localhost:3002/events/' + event._id) %>&quote=<%= encodeURIComponent(event.title + ' - ' + event.description) %>" target="_blank" class="facebook">
+                                Facebook
+                            </a>
+                            <a href="https://twitter.com/intent/tweet?text=<%= encodeURIComponent(event.title + ' - ' + event.description + ' #CampusEvent') %>&url=<%= encodeURIComponent('http://localhost:3002/events/' + event._id) %>" target="_blank" class="twitter">
+                                Twitter
+                            </a>
+                            <a href="https://wa.me/?text=<%= encodeURIComponent(event.title + ' - ' + event.description + ' Check out this event: http://localhost:3002/events/' + event._id) %>" target="_blank" class="whatsapp">
+                                WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <%- include('footer') %>
+</body>
+</html>

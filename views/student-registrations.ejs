@@ -238,7 +238,8 @@
                             <th>Organiser</th>
                             <th>Registered On</th>
                             <th>Student Name</th>
-
+                            <th>User Type</th>
+                            <th>Payment Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -251,8 +252,17 @@
                                 <td><%= registration.event ? registration.event.organizer : 'N/A' %></td>
                                 <td><%= new Date(registration.registeredAt).toLocaleDateString() %></td>
                                 <td><%= registration.studentName || 'N/A' %></td>
+                                <td><%= registration.userType === 'student' ? 'Campus Student' : 'Non-Student' %></td>
                                 <td>
-                                    <span style="color: #6c757d;">N/A</span>
+                                    <% if (registration.userType === 'student') { %>
+                                        <span style="color: #28a745; font-weight: bold;">FREE</span>
+                                    <% } else { %>
+                                        <% if (registration.paymentStatus === 'completed') { %>
+                                            <span style="color: #28a745; font-weight: bold;">PAID</span>
+                                        <% } else { %>
+                                            <span style="color: #ffc107; font-weight: bold;">PENDING</span>
+                                        <% } %>
+                                    <% } %>
                                 </td>
                                 <td>
                                     <form action="/student/cancel-registration/<%= registration._id %>" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to cancel your registration for this event?');">

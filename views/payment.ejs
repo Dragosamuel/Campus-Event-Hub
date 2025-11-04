@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Registration - Campus Event Hub</title>
+    <title>Payment - Campus Event Hub</title>
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        .registration-container {
+        .payment-container {
             max-width: 650px;
             margin: 3rem auto;
             padding: 2.75rem;
@@ -17,19 +17,19 @@
             border: 1px solid rgba(0,0,0,0.05);
         }
         
-        .registration-header {
+        .payment-header {
             text-align: center;
             margin-bottom: 2.25rem;
         }
         
-        .registration-header h1 {
+        .payment-header h1 {
             color: #007bff;
             margin-bottom: 0.6rem;
             font-size: 2rem;
             font-weight: 700;
         }
         
-        .registration-header p {
+        .payment-header p {
             color: #6c757d;
             font-size: 1.1rem;
         }
@@ -50,6 +50,39 @@
             font-weight: 600;
         }
         
+        .payment-methods {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .payment-method {
+            flex: 1;
+            min-width: 200px;
+            padding: 1.5rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-method:hover {
+            border-color: #007bff;
+        }
+        
+        .payment-method.selected {
+            border-color: #007bff;
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+        
+        .payment-method i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
         .form-group {
             margin-bottom: 1.75rem;
         }
@@ -62,7 +95,7 @@
             font-size: 1.05rem;
         }
         
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 1rem;
             border: 2px solid #e9ecef;
@@ -73,7 +106,7 @@
             background-color: #f8f9fa;
         }
         
-        .form-group input:focus {
+        .form-group input:focus, .form-group select:focus {
             border-color: #007bff;
             box-shadow: 0 0 0 0.3rem rgba(0, 123, 255, 0.15);
             outline: none;
@@ -206,83 +239,6 @@
             background-color: #23272b;
         }
         
-        /* Dark mode button variants */
-        .dark-mode .btn {
-            box-shadow: 0 4px 12px var(--shadow-medium);
-        }
-        
-        .dark-mode .btn-primary {
-            background-color: var(--primary-color);
-            color: var(--text-white);
-        }
-        
-        .dark-mode .btn-primary:hover {
-            background-color: var(--primary-dark);
-        }
-        
-        .dark-mode .btn-secondary {
-            background-color: var(--secondary-color);
-            color: var(--text-white);
-        }
-        
-        .dark-mode .btn-secondary:hover {
-            background-color: #5a6268;
-        }
-        
-        .dark-mode .btn-success {
-            background-color: var(--success-color);
-            color: var(--text-white);
-        }
-        
-        .dark-mode .btn-success:hover {
-            background-color: var(--success-dark);
-        }
-        
-        .dark-mode .btn-danger {
-            background-color: var(--danger-color);
-            color: var(--text-white);
-        }
-        
-        .dark-mode .btn-danger:hover {
-            background-color: var(--danger-dark);
-        }
-        
-        .dark-mode .btn-warning {
-            background-color: var(--warning-color);
-            color: var(--text-primary);
-        }
-        
-        .dark-mode .btn-warning:hover {
-            background-color: var(--warning-dark);
-        }
-        
-        .dark-mode .btn-info {
-            background-color: var(--info-color);
-            color: var(--text-white);
-        }
-        
-        .dark-mode .btn-info:hover {
-            background-color: var(--info-dark);
-        }
-        
-        .dark-mode .btn-light {
-            background-color: var(--bg-light);
-            color: var(--text-primary);
-        }
-        
-        .dark-mode .btn-light:hover {
-            background-color: #3d3d3d;
-        }
-        
-        .dark-mode .btn-dark {
-            background-color: var(--dark-color);
-            color: var(--text-white);
-        }
-        
-        .dark-mode .btn-dark:hover {
-            background-color: #121416;
-        }
-        
         .loading {
             display: none;
             text-align: center;
@@ -347,12 +303,12 @@
         }
         
         @media (max-width: 576px) {
-            .registration-container {
+            .payment-container {
                 margin: 1.5rem;
                 padding: 2rem;
             }
             
-            .registration-header h1 {
+            .payment-header h1 {
                 font-size: 1.7rem;
             }
             
@@ -360,11 +316,15 @@
                 padding: 1.5rem;
             }
             
+            .payment-methods {
+                flex-direction: column;
+            }
+            
             .form-group {
                 margin-bottom: 1.5rem;
             }
             
-            .form-group input {
+            .form-group input, .form-group select {
                 padding: 0.85rem;
                 font-size: 1rem;
             }
@@ -374,64 +334,52 @@
 <body>
     <%- include('header') %>
     
-    <div class="registration-container">
-        <div class="registration-header">
-            <h1>Event Registration</h1>
-            <p>Register for this exciting campus event</p>
+    <div class="payment-container">
+        <div class="payment-header">
+            <h1>Payment Processing</h1>
+            <p>Complete your registration by making payment</p>
         </div>
         
         <div class="event-details-card">
-            <h3>Event Registration</h3>
+            <h3>Event Details</h3>
             <div id="eventDetails">
                 <p>Loading event details...</p>
             </div>
             <input type="hidden" name="eventId" value="<%= eventId %>">
+            <input type="hidden" name="registrationId" value="<%= registrationId %>">
         </div>
         
-        <form class="registration-form" id="registrationForm" action="/register" method="POST">
+        <form class="payment-form" id="paymentForm" action="/payment/process" method="POST">
             <div id="message" class="message"></div>
             
             <input type="hidden" name="eventId" value="<%= eventId %>">
+            <input type="hidden" name="registrationId" value="<%= registrationId %>">
             
             <div class="form-group">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" name="name" required placeholder="Enter your full name">
+                <label>Select Payment Method</label>
+                <div class="payment-methods">
+                    <div class="payment-method" data-method="debit-card">
+                        <i>💳</i>
+                        <div>Debit Card</div>
+                    </div>
+                    <div class="payment-method" data-method="mobile-money">
+                        <i>📱</i>
+                        <div>Mobile Money</div>
+                    </div>
+                </div>
+                <input type="hidden" id="paymentMethod" name="paymentMethod" required>
             </div>
             
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" required placeholder="Enter your email">
-            </div>
-            
-            <div class="form-group">
-                <label for="userType">User Type</label>
-                <select id="userType" name="userType" required>
-                    <option value="">Select user type</option>
-                    <option value="student">Campus Student (Free Registration)</option>
-                    <option value="non-student">Non-Student (Paid Registration)</option>
-                </select>
-            </div>
-            
-            <div class="form-group" id="studentIdGroup" style="display: none;">
-                <label for="studentId">Student ID</label>
-                <input type="text" id="studentId" name="studentId" placeholder="Enter your student ID">
-            </div>
-            
-            <div class="form-group" id="paymentGroup" style="display: none;">
-                <label for="paymentMethod">Payment Method</label>
-                <select id="paymentMethod" name="paymentMethod">
-                    <option value="">Select payment method</option>
-                    <option value="debit-card">Debit Card</option>
-                    <option value="mobile-money">Mobile Money</option>
-                </select>
+            <div id="paymentDetails">
+                <!-- Payment details will be shown here based on selected method -->
             </div>
             
             <div class="loading" id="loading">
                 <div class="loading-spinner"></div>
-                <p style="margin-top: 1.25rem;">Processing your registration...</p>
+                <p style="margin-top: 1.25rem;">Processing your payment...</p>
             </div>
             
-            <button type="submit" class="btn btn-primary" id="submitBtn">Register for Event</button>
+            <button type="submit" class="btn btn-success" id="submitBtn">Complete Payment</button>
         </form>
         
         <div class="form-footer">
@@ -442,55 +390,100 @@
     <%- include('footer') %>
     
     <script>
-        // Handle user type selection
-        document.getElementById('userType').addEventListener('change', function() {
-            const userType = this.value;
-            const studentIdGroup = document.getElementById('studentIdGroup');
-            const paymentGroup = document.getElementById('paymentGroup');
-            
-            if (userType === 'student') {
-                studentIdGroup.style.display = 'block';
-                paymentGroup.style.display = 'none';
-                document.getElementById('studentId').required = true;
-                document.getElementById('paymentMethod').required = false;
-            } else if (userType === 'non-student') {
-                studentIdGroup.style.display = 'none';
-                paymentGroup.style.display = 'block';
-                document.getElementById('studentId').required = false;
-                document.getElementById('paymentMethod').required = true;
-            } else {
-                studentIdGroup.style.display = 'none';
-                paymentGroup.style.display = 'none';
-                document.getElementById('studentId').required = false;
-                document.getElementById('paymentMethod').required = false;
-            }
+        // Handle payment method selection
+        document.querySelectorAll('.payment-method').forEach(method => {
+            method.addEventListener('click', function() {
+                // Remove selected class from all methods
+                document.querySelectorAll('.payment-method').forEach(m => {
+                    m.classList.remove('selected');
+                });
+                
+                // Add selected class to clicked method
+                this.classList.add('selected');
+                
+                // Set hidden input value
+                document.getElementById('paymentMethod').value = this.dataset.method;
+                
+                // Show payment details form based on selected method
+                showPaymentDetails(this.dataset.method);
+            });
         });
         
+        // Show payment details based on selected method
+        function showPaymentDetails(method) {
+            const paymentDetails = document.getElementById('paymentDetails');
+            
+            if (method === 'debit-card') {
+                paymentDetails.innerHTML = `
+                    <div class="form-group">
+                        <label for="cardNumber">Card Number</label>
+                        <input type="text" id="cardNumber" name="cardNumber" required placeholder="1234 5678 9012 3456">
+                    </div>
+                    
+                    <div class="form-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                        <div class="form-group">
+                            <label for="expiryDate">Expiry Date</label>
+                            <input type="text" id="expiryDate" name="expiryDate" required placeholder="MM/YY">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cvv">CVV</label>
+                            <input type="text" id="cvv" name="cvv" required placeholder="123">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cardholderName">Cardholder Name</label>
+                        <input type="text" id="cardholderName" name="cardholderName" required placeholder="John Doe">
+                    </div>
+                `;
+            } else if (method === 'mobile-money') {
+                paymentDetails.innerHTML = `
+                    <div class="form-group">
+                        <label for="phoneNumber">Phone Number</label>
+                        <input type="tel" id="phoneNumber" name="phoneNumber" required placeholder="+1234567890">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mobileNetwork">Mobile Network</label>
+                        <select id="mobileNetwork" name="mobileNetwork" required>
+                            <option value="">Select your network</option>
+                            <option value="mtn">MTN</option>
+                            <option value="airtel">Airtel</option>
+                            <option value="glo">Glo</option>
+                            <option value="9mobile">9mobile</option>
+                        </select>
+                    </div>
+                `;
+            } else {
+                paymentDetails.innerHTML = '';
+            }
+        }
+        
         // Add form submission handling
-        document.getElementById('registrationForm').addEventListener('submit', function(e) {
-            const userType = document.getElementById('userType').value;
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            if (!userType) {
-                e.preventDefault();
-                showMessage('Please select a user type', 'error');
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            
+            if (!paymentMethod) {
+                showMessage('Please select a payment method', 'error');
                 return;
             }
             
-            if (userType === 'student' && !document.getElementById('studentId').value) {
-                e.preventDefault();
-                showMessage('Student ID is required for campus students', 'error');
-                return;
-            }
-            
-            if (userType === 'non-student' && !document.getElementById('paymentMethod').value) {
-                e.preventDefault();
-                showMessage('Payment method is required for non-students', 'error');
-                return;
-            }
-            
+            // Show loading spinner
             const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<div class="loading-spinner" style="width: 24px; height: 24px; border-width: 3px; margin: 0 auto;"></div>';
+            submitBtn.style.display = 'none';
+            loading.style.display = 'block';
+            
+            // In a real application, you would process the payment here
+            // For this demo, we'll simulate a successful payment after 2 seconds
+            setTimeout(() => {
+                // Redirect to success page
+                window.location.href = `/payment/success?eventId=<%= eventId %>&registrationId=<%= registrationId %>`;
+            }, 2000);
         });
         
         // Show message function
@@ -523,28 +516,12 @@
                 
                 const event = await response.json();
                 
-                // Check if event date has passed
-                const eventDate = new Date(event.date);
-                const today = new Date();
-                today.setHours(0, 0, 0, 0); // Reset time part for comparison
-                
-                if (eventDate < today) {
-                    eventDetails.innerHTML = `
-                        <p><strong>Event:</strong> ${event.title}</p>
-                        <p><strong>Date:</strong> ${event.date} at ${event.time}</p>
-                        <p><strong>Location:</strong> ${event.location}</p>
-                        <p style="color: #dc3545; font-weight: bold; margin-top: 1rem;">This event date has already passed. Registration is no longer available.</p>
-                    `;
-                    // Disable the registration form
-                    document.getElementById('registrationForm').style.display = 'none';
-                } else {
-                    eventDetails.innerHTML = `
-                        <p><strong>Event:</strong> ${event.title}</p>
-                        <p><strong>Date:</strong> ${event.date} at ${event.time}</p>
-                        <p><strong>Location:</strong> ${event.location}</p>
-                        <p><strong>Organizer:</strong> ${event.organizer}</p>
-                    `;
-                }
+                eventDetails.innerHTML = `
+                    <p><strong>Event:</strong> ${event.title}</p>
+                    <p><strong>Date:</strong> ${event.date} at ${event.time}</p>
+                    <p><strong>Location:</strong> ${event.location}</p>
+                    <p><strong>Organizer:</strong> ${event.organizer}</p>
+                `;
             } catch (error) {
                 eventDetails.innerHTML = `<p style="color: #dc3545;">Error loading event details: ${error.message}</p>`;
             }

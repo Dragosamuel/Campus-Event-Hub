@@ -111,3 +111,4 @@
 {"eventId":"6909a90698bad0d964465417","level":"info","message":"Event created successfully","service":"event-service","timestamp":"2025-11-04T07:19:34.048Z"}
 {"eventId":"6909a90698bad0d964465417","level":"info","message":"Event registration created","registrationId":"6909a92c98bad0d964465418","service":"event-service","studentEmail":"dragosamuel443@gmail.com","timestamp":"2025-11-04T07:20:12.362Z"}
 {"eventId":"6909a90698bad0d964465417","level":"info","message":"Event updated successfully","service":"event-service","timestamp":"2025-11-04T07:20:52.838Z"}
+{"level":"info","message":"EventService initialized successfully","service":"event-service","timestamp":"2025-11-04T14:31:05.452Z"}

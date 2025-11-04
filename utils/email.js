@@ -223,10 +223,62 @@ async function sendEventReminder(event, students) {
   }
 }
 
+// Send upcoming event notification to all registered students
+async function sendUpcomingEventNotification(event, students) {
+  try {
+    if (!students || students.length === 0) {
+      logger.info('No students to notify for upcoming event');
+      return;
+    }
+
+    const subject = `Upcoming Event: ${event.title}`;
+    const eventDate = new Date(`${event.date}T${event.time}`);
+    const formattedDate = eventDate.toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    
+    const htmlContent = `
+      <h2>Upcoming Event Notification</h2>
+      <p>This is a notification that the event "${event.title}" you registered for is coming up soon.</p>
+      <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <h3>Event Details</h3>
+        <ul>
+          <li><strong>Event:</strong> ${event.title}</li>
+          <li><strong>Date:</strong> ${formattedDate}</li>
+          <li><strong>Time:</strong> ${event.time}</li>
+          <li><strong>Location:</strong> ${event.location}</li>
+        </ul>
+      </div>
+      <p>Don't forget to attend this exciting event!</p>
+      <p>Best regards,<br>Campus Event Hub Team</p>
+    `;
+
+    // Send email to each student
+    const emailPromises = students.map(student => {
+      return sendEmailNotification(
+        student.studentEmail || student.email,
+        subject,
+        htmlContent
+      );
+    });
+
+    // Wait for all emails to be sent
+    await Promise.all(emailPromises);
+    logger.info(`Upcoming event notifications sent to ${students.length} students for event ${event.title}`);
+  } catch (error) {
+    logger.error('Error sending upcoming event notifications:', error);
+    throw error;
+  }
+}
+
 module.exports = {
   initializeEmailService,
   sendEmailNotification,
   sendEventUpdateNotification,
   sendRegistrationConfirmation,
-  sendEventReminder
+  sendEventReminder,
+  sendUpcomingEventNotification
 };

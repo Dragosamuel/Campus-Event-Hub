@@ -18,14 +18,21 @@
             <li><a href="/admin" class="nav-link" data-page="admin">Admin Panel</a></li>
         </ul>
         <div id="authLinks">
-            <!-- Public access - no login required -->
             <button id="darkModeToggle" class="profile-btn"><span>🌙</span> Dark Mode</button>
             <div class="profile-dropdown">
-                <button class="profile-btn">👤 Guest</button>
+                <button class="profile-btn" id="profileBtn">
+                    <span id="userDisplay">👤 Guest</span>
+                </button>
                 <ul class="profile-menu">
                     <li><a href="/profile" class="profile-item">Profile</a></li>
                     <li><a href="/settings" class="profile-item">Settings</a></li>
-                    <li><a href="/auth/login" class="profile-item">Login</a></li>
+                    <li id="authItems">
+                        <a href="/auth/login" class="profile-item" id="loginLink">Login</a>
+                        <a href="/auth/register" class="profile-item" id="registerLink">Register</a>
+                    </li>
+                    <li id="logoutItem" style="display: none;">
+                        <a href="#" class="profile-item" id="logoutLink">Logout</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -67,9 +74,18 @@
 </style>
 
 <script>
-    // No authentication functionality needed
     document.addEventListener('DOMContentLoaded', function() {
-        // All pages are publicly accessible
+        // Check for saved user data
+        const token = localStorage.getItem('token');
+        const userData = localStorage.getItem('user');
+        
+        // Update UI based on authentication status
+        if (token && userData) {
+            const user = JSON.parse(userData);
+            document.getElementById('userDisplay').textContent = user.name || user.email || 'User';
+            document.getElementById('authItems').style.display = 'none';
+            document.getElementById('logoutItem').style.display = 'block';
+        }
         
         // Profile dropdown functionality
         const profileBtn = document.querySelector('.profile-btn');
@@ -86,6 +102,20 @@
                 if (!profileBtn.contains(e.target) && !profileMenu.contains(e.target)) {
                     profileMenu.classList.remove('show');
                 }
+            });
+        }
+        
+        // Logout functionality
+        const logoutLink = document.getElementById('logoutLink');
+        if (logoutLink) {
+            logoutLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Clear token and user data from localStorage
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                
+                // Redirect to home page
+                window.location.href = '/';
             });
         }
         
@@ -117,8 +147,5 @@
                 }
             });
         }
-        
-        // No logout functionality needed for guest users
-        // Login functionality is handled by the link directly
     });
 </script>

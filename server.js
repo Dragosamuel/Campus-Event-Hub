@@ -9,6 +9,7 @@ const XLSX = require('xlsx');
 const PDFDocument = require('pdfkit');
 const stream = require('stream');
 const cron = require('node-cron');
+const multer = require('multer');
 require('dotenv').config();
 
 // Import utilities
@@ -19,11 +20,40 @@ const { handleErrors, handle404, catchAsync } = require('./utils/errorHandler');
 const eventService = require('./services/eventService');
 const userService = require('./services/userService');
 
+// Import middleware
+const { isAuthenticated } = require('./middleware/authMiddleware');
+
 // Import routes
-// const authRoutes = require('./routes/authRoutes'); // Removed authentication routes
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 const port = process.env.PORT || 3002;
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/uploads/')
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname))
+  }
+})
+
+const upload = multer({ 
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  },
+  fileFilter: function (req, file, cb) {
+    // Accept images and videos only
+    if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('video/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image and video files are allowed!'));
+    }
+  }
+});
 
 // Middleware
 app.set('view engine', 'ejs');
@@ -120,11 +150,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Simplified middleware for guest users
-const guestMiddleware = (req, res, next) => {
-  req.user = { role: 'guest' };
-  next();
-};
+// Use authentication middleware for all routes
+app.use(isAuthenticated);
 
 // Routes (making all view pages publicly accessible)
 app.get('/', catchAsync(async (req, res) => {
@@ -672,13 +699,15 @@ app.get('/organizer/event/:eventId/registrations/export/pdf', catchAsync(async (
     }
 }));
 
-// Auth routes - removed authentication functionality
+// Auth routes
+app.use('/api/auth', authRoutes);
+
 app.get('/auth/login', (req, res) => {
-  res.redirect('/');
+  res.render('auth/login', { user: { role: 'guest' } });
 });
 
 app.get('/auth/register', (req, res) => {
-  res.redirect('/');
+  res.render('auth/register', { user: { role: 'guest' } });
 });
 
 // Spreadsheet export - publicly accessible but shows empty data
@@ -836,10 +865,38 @@ app.get('/api/event-details/:eventId', catchAsync(async (req, res) => {
     }
 }));
 
+// Route to view event details
+app.get('/events/:eventId', catchAsync(async (req, res) => {
+    try {
+        const eventId = req.params.eventId;
+        
+        // Get event details
+        const event = await eventService.getEventById(eventId);
+        
+        if (!event) {
+            return res.status(404).render('error', { 
+                message: 'Event not found',
+                error: {}
+            });
+        }
+        
+        res.render('event-details', { 
+            user: req.user,
+            event: event
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).render('error', { 
+            message: 'Error fetching event details',
+            error: process.env.NODE_ENV === 'development' ? error : {}
+        });
+    }
+}));
+
 // Registration - publicly accessible
 app.post('/register', catchAsync(async (req, res) => {
   try {
-    const { name, email, studentId, eventId } = req.body;
+    const { name, email, studentId, eventId, userType, paymentMethod } = req.body;
     
     // Get event details to check if event date has passed
     const event = await eventService.getEventById(eventId);
@@ -856,14 +913,49 @@ app.post('/register', catchAsync(async (req, res) => {
       });
     }
     
-    // Register for event using service
-    await eventService.registerForEvent({
+    // Validate user type
+    if (!userType) {
+      return res.status(400).render('error', { 
+        message: 'User type is required',
+        error: { message: 'Please select whether you are a campus student or non-student.' }
+      });
+    }
+    
+    // Validate student ID for students
+    if (userType === 'student' && !studentId) {
+      return res.status(400).render('error', { 
+        message: 'Student ID is required',
+        error: { message: 'Student ID is required for campus students.' }
+      });
+    }
+    
+    // Validate payment method for non-students
+    if (userType === 'non-student' && !paymentMethod) {
+      return res.status(400).render('error', { 
+        message: 'Payment method is required',
+        error: { message: 'Payment method is required for non-students.' }
+      });
+    }
+    
+    // Set registration data based on user type
+    const registrationData = {
       studentEmail: email,
       eventId: eventId,
       studentName: name,
-      studentId: studentId,
+      studentId: userType === 'student' ? studentId : null,
+      userType: userType,
+      paymentMethod: userType === 'non-student' ? paymentMethod : null,
+      paymentStatus: userType === 'student' ? 'free' : 'pending',
       registeredAt: new Date()
-    });
+    };
+    
+    // Register for event using service
+    const registration = await eventService.registerForEvent(registrationData);
+    
+    // If non-student, redirect to payment page
+    if (userType === 'non-student') {
+      return res.redirect(`/payment?eventId=${eventId}&registrationId=${registration._id}`);
+    }
     
     // Redirect to a success page or back to events with a success message
     res.redirect('/events?registered=true');
@@ -908,9 +1000,13 @@ app.post('/feedback', catchAsync(async (req, res) => {
 }));
 
 // Create event - publicly accessible
-app.post('/organizer/create-event', catchAsync(async (req, res) => {
+app.post('/organizer/create-event', upload.fields([{ name: 'images', maxCount: 5 }, { name: 'videos', maxCount: 3 }]), catchAsync(async (req, res) => {
   try {
     const { title, description, date, time, location, organizer } = req.body;
+    
+    // Process uploaded files
+    const images = req.files['images'] ? req.files['images'].map(file => '/uploads/' + file.filename) : [];
+    const videos = req.files['videos'] ? req.files['videos'].map(file => '/uploads/' + file.filename) : [];
     
     // Create event using service
     await eventService.createEvent({
@@ -920,7 +1016,9 @@ app.post('/organizer/create-event', catchAsync(async (req, res) => {
       time,
       location,
       organizer: organizer || 'guest@example.com',
-      createdBy: 'guest@example.com'
+      createdBy: 'guest@example.com',
+      images: images,
+      videos: videos
     });
     
     res.redirect('/organizer');
@@ -964,6 +1062,193 @@ app.post('/student/cancel-registration/:registrationId', catchAsync(async (req, 
         console.error('Error cancelling registration:', error);
         res.status(500).render('error', { 
             message: 'Error cancelling registration',
+            error: process.env.NODE_ENV === 'development' ? error : {}
+        });
+    }
+}));
+
+// Payment processing routes
+app.get('/payment', catchAsync(async (req, res) => {
+    try {
+        const { eventId, registrationId } = req.query;
+        
+        // Validate query parameters
+        if (!eventId || !registrationId) {
+            return res.status(400).render('error', { 
+                message: 'Missing required parameters',
+                error: { message: 'Event ID and Registration ID are required for payment processing.' }
+            });
+        }
+        
+        // Validate ObjectId
+        if (!ObjectId.isValid(eventId) || !ObjectId.isValid(registrationId)) {
+            return res.status(400).render('error', { 
+                message: 'Invalid parameters',
+                error: { message: 'Invalid Event ID or Registration ID format.' }
+            });
+        }
+        
+        // Get registration details
+        const registration = await database.getCollection('registrations').findOne({ 
+            _id: new ObjectId(registrationId) 
+        });
+        
+        if (!registration) {
+            return res.status(404).render('error', { 
+                message: 'Registration not found',
+                error: { message: 'The specified registration could not be found.' }
+            });
+        }
+        
+        // Check if registration is for a non-student
+        if (registration.userType !== 'non-student') {
+            return res.status(400).render('error', { 
+                message: 'Invalid registration type',
+                error: { message: 'Payment processing is only available for non-student registrations.' }
+            });
+        }
+        
+        // Check if payment is already completed
+        if (registration.paymentStatus === 'completed') {
+            return res.status(400).render('error', { 
+                message: 'Payment already completed',
+                error: { message: 'Payment for this registration has already been completed.' }
+            });
+        }
+        
+        res.render('payment', { 
+            user: req.user,
+            eventId: eventId,
+            registrationId: registrationId
+        });
+    } catch (error) {
+        console.error('Error loading payment page:', error);
+        res.status(500).render('error', { 
+            message: 'Error loading payment page',
+            error: process.env.NODE_ENV === 'development' ? error : {}
+        });
+    }
+}));
+
+app.post('/payment/process', catchAsync(async (req, res) => {
+    try {
+        const { eventId, registrationId, paymentMethod } = req.body;
+        
+        // Validate form data
+        if (!eventId || !registrationId || !paymentMethod) {
+            return res.status(400).render('error', { 
+                message: 'Missing required fields',
+                error: { message: 'All payment fields are required.' }
+            });
+        }
+        
+        // Validate ObjectId
+        if (!ObjectId.isValid(eventId) || !ObjectId.isValid(registrationId)) {
+            return res.status(400).render('error', { 
+                message: 'Invalid parameters',
+                error: { message: 'Invalid Event ID or Registration ID format.' }
+            });
+        }
+        
+        // Get registration details
+        const registration = await database.getCollection('registrations').findOne({ 
+            _id: new ObjectId(registrationId) 
+        });
+        
+        if (!registration) {
+            return res.status(404).render('error', { 
+                message: 'Registration not found',
+                error: { message: 'The specified registration could not be found.' }
+            });
+        }
+        
+        // Check if registration is for a non-student
+        if (registration.userType !== 'non-student') {
+            return res.status(400).render('error', { 
+                message: 'Invalid registration type',
+                error: { message: 'Payment processing is only available for non-student registrations.' }
+            });
+        }
+        
+        // Check if payment is already completed
+        if (registration.paymentStatus === 'completed') {
+            return res.status(400).render('error', { 
+                message: 'Payment already completed',
+                error: { message: 'Payment for this registration has already been completed.' }
+            });
+        }
+        
+        // Update registration with payment status
+        await eventService.updateRegistrationPaymentStatus(registrationId, 'completed', paymentMethod);
+        
+        // Redirect to payment success page
+        res.redirect(`/payment/success?eventId=${eventId}&registrationId=${registrationId}`);
+    } catch (error) {
+        console.error('Error processing payment:', error);
+        res.status(500).render('error', { 
+            message: 'Error processing payment',
+            error: process.env.NODE_ENV === 'development' ? error : {}
+        });
+    }
+}));
+
+app.get('/payment/success', catchAsync(async (req, res) => {
+    try {
+        const { eventId, registrationId } = req.query;
+        
+        // Validate query parameters
+        if (!eventId || !registrationId) {
+            return res.status(400).render('error', { 
+                message: 'Missing required parameters',
+                error: { message: 'Event ID and Registration ID are required.' }
+            });
+        }
+        
+        // Validate ObjectId
+        if (!ObjectId.isValid(eventId) || !ObjectId.isValid(registrationId)) {
+            return res.status(400).render('error', { 
+                message: 'Invalid parameters',
+                error: { message: 'Invalid Event ID or Registration ID format.' }
+            });
+        }
+        
+        // Get registration details
+        const registration = await database.getCollection('registrations').findOne({ 
+            _id: new ObjectId(registrationId) 
+        });
+        
+        if (!registration) {
+            return res.status(404).render('error', { 
+                message: 'Registration not found',
+                error: { message: 'The specified registration could not be found.' }
+            });
+        }
+        
+        // Check if registration is for a non-student
+        if (registration.userType !== 'non-student') {
+            return res.status(400).render('error', { 
+                message: 'Invalid registration type',
+                error: { message: 'Payment success page is only available for non-student registrations.' }
+            });
+        }
+        
+        // Check if payment is completed
+        if (registration.paymentStatus !== 'completed') {
+            return res.status(400).render('error', { 
+                message: 'Payment not completed',
+                error: { message: 'Payment for this registration has not been completed yet.' }
+            });
+        }
+        
+        res.render('payment-success', { 
+            user: req.user,
+            eventId: eventId,
+            registrationId: registrationId
+        });
+    } catch (error) {
+        console.error('Error loading payment success page:', error);
+        res.status(500).render('error', { 
+            message: 'Error loading payment success page',
             error: process.env.NODE_ENV === 'development' ? error : {}
         });
     }
@@ -1018,6 +1303,48 @@ cron.schedule('0 9 * * *', async () => {
     }
   } catch (error) {
     console.error('Error in event reminder scheduler:', error);
+  }
+});
+
+// Schedule upcoming event notifications (runs every day at 10:00 AM)
+cron.schedule('0 10 * * *', async () => {
+  console.log('Checking for upcoming events to send notifications...');
+  try {
+    // Get all events happening in the next 3 days
+    const inThreeDays = new Date();
+    inThreeDays.setDate(inThreeDays.getDate() + 3);
+    
+    // Format date as YYYY-MM-DD for MongoDB query
+    const inThreeDaysStr = inThreeDays.toISOString().split('T')[0];
+    
+    // Find events happening in three days
+    const events = await database.getCollection('events').find({
+      date: inThreeDaysStr
+    }).toArray();
+    
+    console.log(`Found ${events.length} events happening in 3 days`);
+    
+    // For each event, send notifications to registered students
+    for (const event of events) {
+      try {
+        // Get all registered students for this event
+        const registrations = await database.getCollection('registrations').find({
+          eventId: event._id.toString()
+        }).toArray();
+        
+        console.log(`Found ${registrations.length} registrations for event ${event.title}`);
+        
+        // Send notifications if there are registrations
+        if (registrations.length > 0) {
+          await emailService.sendUpcomingEventNotification(event, registrations);
+          console.log(`Notifications sent for event: ${event.title}`);
+        }
+      } catch (error) {
+        console.error(`Error sending notifications for event ${event.title}:`, error);
+      }
+    }
+  } catch (error) {
+    console.error('Error in upcoming event notification scheduler:', error);
   }
 });
 

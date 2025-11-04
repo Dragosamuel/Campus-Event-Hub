@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful - Campus Event Hub</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .success-container {
+            max-width: 650px;
+            margin: 3rem auto;
+            padding: 2.75rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            animation: fadeIn 0.6s ease-out;
+            border: 1px solid rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            color: #28a745;
+            margin-bottom: 1.5rem;
+        }
+        
+        .success-header h1 {
+            color: #28a745;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .success-header p {
+            color: #6c757d;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .event-details-card {
+            background-color: #f8f9fa;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2.25rem;
+            border-left: 4px solid #28a745;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            text-align: left;
+        }
+        
+        .event-details-card h3 {
+            margin-top: 0;
+            color: #28a745;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        .ticket-section {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .ticket-section h3 {
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+        
+        .ticket-code {
+            font-family: 'Courier New', monospace;
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .ticket-info {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 1.5rem;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 12px var(--shadow-light);
+            min-height: 46px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            margin: 0.5rem;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px var(--shadow-medium);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 12px var(--shadow-light);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--text-white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: var(--text-white);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .form-footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .form-footer a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 576px) {
+            .success-container {
+                margin: 1.5rem;
+                padding: 2rem;
+            }
+            
+            .success-header h1 {
+                font-size: 1.7rem;
+            }
+            
+            .event-details-card {
+                padding: 1.5rem;
+            }
+            
+            .ticket-code {
+                font-size: 1.5rem;
+                letter-spacing: 2px;
+            }
+            
+            .btn {
+                width: 100%;
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('header') %>
+    
+    <div class="success-container">
+        <div class="success-icon">✓</div>
+        
+        <div class="success-header">
+            <h1>Payment Successful!</h1>
+            <p>Your registration has been confirmed and payment processed successfully.</p>
+        </div>
+        
+        <div class="event-details-card">
+            <h3>Event Details</h3>
+            <div id="eventDetails">
+                <p>Loading event details...</p>
+            </div>
+        </div>
+        
+        <div class="ticket-section">
+            <h3>Your Ticket</h3>
+            <div class="ticket-code" id="ticketCode">LOADING...</div>
+            <p>Please save this ticket code. You'll need to present it at the event entrance.</p>
+            <div class="ticket-info">
+                <p>This ticket is non-refundable and non-transferable.</p>
+            </div>
+        </div>
+        
+        <div class="actions">
+            <a href="/events" class="btn btn-primary">Browse More Events</a>
+            <a href="/student/registrations" class="btn btn-secondary">View My Registrations</a>
+        </div>
+        
+        <div class="form-footer">
+            <p>Thank you for using Campus Event Hub!</p>
+        </div>
+    </div>
+    
+    <%- include('footer') %>
+    
+    <script>
+        // Generate a random ticket code
+        function generateTicketCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < 8; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+        
+        // Fetch and display event details
+        document.addEventListener('DOMContentLoaded', async function() {
+            const eventId = '<%= eventId %>';
+            const eventDetails = document.getElementById('eventDetails');
+            const ticketCode = document.getElementById('ticketCode');
+            
+            // Generate and display ticket code
+            ticketCode.textContent = generateTicketCode();
+            
+            try {
+                // Fetch event data from API
+                const response = await fetch(`/api/event-details/${eventId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch event details');
+                }
+                
+                const event = await response.json();
+                
+                eventDetails.innerHTML = `
+                    <p><strong>Event:</strong> ${event.title}</p>
+                    <p><strong>Date:</strong> ${event.date} at ${event.time}</p>
+                    <p><strong>Location:</strong> ${event.location}</p>
+                    <p><strong>Organizer:</strong> ${event.organizer}</p>
+                `;
+            } catch (error) {
+                eventDetails.innerHTML = `<p style="color: #dc3545;">Error loading event details: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
