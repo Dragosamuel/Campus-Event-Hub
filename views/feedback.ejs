@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Feedback - Campus Event Hub</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .feedback-container {
+            max-width: 650px;
+            margin: 3rem auto;
+            padding: 2.75rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            animation: fadeIn 0.6s ease-out;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .feedback-header {
+            text-align: center;
+            margin-bottom: 2.25rem;
+        }
+        
+        .feedback-header h1 {
+            color: #007bff;
+            margin-bottom: 0.6rem;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .feedback-header p {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+        
+        .event-details-card {
+            background-color: #f8f9fa;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2.25rem;
+            border-left: 4px solid #007bff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .event-details-card h3 {
+            margin-top: 0;
+            color: #007bff;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 1.75rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+            color: #495057;
+            font-size: 1.05rem;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            font-size: 1.05rem;
+            background-color: #f8f9fa;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.3rem rgba(0, 123, 255, 0.15);
+            outline: none;
+            background-color: white;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 140px;
+        }
+        
+        .rating-group {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .rating-group input[type="radio"] {
+            display: none;
+        }
+        
+        .rating-group label {
+            font-size: 2.75rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            color: #ddd;
+        }
+        
+        .rating-group label:hover,
+        .rating-group input[type="radio"]:checked + label {
+            color: #ffc107;
+            transform: scale(1.2);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 12px var(--shadow-light);
+            min-height: 46px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px var(--shadow-medium);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 12px var(--shadow-light);
+        }
+        
+        .btn:disabled {
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Button variants */
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--text-white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: var(--text-white);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            color: var(--text-white);
+        }
+        
+        .btn-success:hover {
+            background-color: var(--success-dark);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: var(--text-white);
+        }
+        
+        .btn-danger:hover {
+            background-color: var(--danger-dark);
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: var(--text-primary);
+        }
+        
+        .btn-warning:hover {
+            background-color: var(--warning-dark);
+        }
+        
+        .btn-info {
+            background-color: var(--info-color);
+            color: var(--text-white);
+        }
+        
+        .btn-info:hover {
+            background-color: var(--info-dark);
+        }
+        
+        .btn-light {
+            background-color: var(--bg-light);
+            color: var(--text-primary);
+        }
+        
+        .btn-light:hover {
+            background-color: #e2e6ea;
+        }
+        
+        .btn-dark {
+            background-color: var(--dark-color);
+            color: var(--text-white);
+        }
+        
+        .btn-dark:hover {
+            background-color: #23272b;
+        }
+        
+        /* Dark mode button variants */
+        .dark-mode .btn {
+            box-shadow: 0 4px 12px var(--shadow-medium);
+        }
+        
+        .dark-mode .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--text-white);
+        }
+        
+        .dark-mode .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .dark-mode .btn-secondary {
+            background-color: var(--secondary-color);
+            color: var(--text-white);
+        }
+        
+        .dark-mode .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .dark-mode .btn-success {
+            background-color: var(--success-color);
+            color: var(--text-white);
+        }
+        
+        .dark-mode .btn-success:hover {
+            background-color: var(--success-dark);
+        }
+        
+        .dark-mode .btn-danger {
+            background-color: var(--danger-color);
+            color: var(--text-white);
+        }
+        
+        .dark-mode .btn-danger:hover {
+            background-color: var(--danger-dark);
+        }
+        
+        .dark-mode .btn-warning {
+            background-color: var(--warning-color);
+            color: var(--text-primary);
+        }
+        
+        .dark-mode .btn-warning:hover {
+            background-color: var(--warning-dark);
+        }
+        
+        .dark-mode .btn-info {
+            background-color: var(--info-color);
+            color: var(--text-white);
+        }
+        
+        .dark-mode .btn-info:hover {
+            background-color: var(--info-dark);
+        }
+        
+        .dark-mode .btn-light {
+            background-color: var(--bg-light);
+            color: var(--text-primary);
+        }
+        
+        .dark-mode .btn-light:hover {
+            background-color: #3d3d3d;
+        }
+        
+        .dark-mode .btn-dark {
+            background-color: var(--dark-color);
+            color: var(--text-white);
+        }
+        
+        .dark-mode .btn-dark:hover {
+            background-color: #121416;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 1.25rem 0;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .message {
+            padding: 1.25rem;
+            margin: 1.25rem 0;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .message.info {
+            background-color: #cce5ff;
+            color: #004085;
+            border: 1px solid #b8daff;
+        }
+        
+        .form-footer {
+            text-align: center;
+            margin-top: 1.75rem;
+            padding-top: 1.75rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .form-footer a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 576px) {
+            .feedback-container {
+                margin: 1.5rem;
+                padding: 2rem;
+            }
+            
+            .feedback-header h1 {
+                font-size: 1.7rem;
+            }
+            
+            .event-details-card {
+                padding: 1.5rem;
+            }
+            
+            .rating-group label {
+                font-size: 2.25rem;
+            }
+            
+            .form-group {
+                margin-bottom: 1.5rem;
+            }
+            
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 0.85rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('header') %>
+    
+    <div class="feedback-container">
+        <div class="feedback-header">
+            <h1>Event Feedback</h1>
+            <p>Share your experience with this event</p>
+        </div>
+        
+        <div class="event-details-card">
+            <h3>Event Feedback</h3>
+            <p>You are providing feedback for event ID: <%= typeof eventId !== 'undefined' ? eventId : '' %></p>
+            <input type="hidden" name="eventId" value="<%= typeof eventId !== 'undefined' ? eventId : '' %>">
+            
+            <!-- Social Sharing Buttons -->
+            <div class="social-sharing" style="margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid #eee;">
+                <p style="margin: 0 0 0.6rem 0; font-weight: bold; font-size: 0.95rem;">Share this event with others:</p>
+                <div class="sharing-buttons" style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent('http://localhost:3002/events') %>&quote=<%= encodeURIComponent('Check out this campus event!') %>" target="_blank" class="btn btn-secondary" style="background-color: #3b5998; border-color: #3b5998; font-size: 0.9rem; padding: 0.6rem 1.1rem; min-height: 40px;">
+                        Facebook
+                    </a>
+                    <a href="https://twitter.com/intent/tweet?text=<%= encodeURIComponent('Check out this campus event! #CampusEvent') %>&url=<%= encodeURIComponent('http://localhost:3002/events') %>" target="_blank" class="btn btn-secondary" style="background-color: #1da1f2; border-color: #1da1f2; font-size: 0.9rem; padding: 0.6rem 1.1rem; min-height: 40px;">
+                        Twitter
+                    </a>
+                    <a href="https://wa.me/?text=<%= encodeURIComponent('Check out this campus event! ' + 'http://localhost:3002/events') %>" target="_blank" class="btn btn-secondary" style="background-color: #25D366; border-color: #25D366; font-size: 0.9rem; padding: 0.6rem 1.1rem; min-height: 40px;">
+                        WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <% if (typeof user !== 'undefined' && user !== null && user.role !== 'guest') { %>
+            <form class="feedback-form" id="feedbackForm">
+                <div id="message" class="message"></div>
+                
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" value="<%= typeof user !== 'undefined' ? user.name : '' %>" required placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" value="<%= typeof user !== 'undefined' ? user.email : '' %>" required placeholder="Enter your email">
+                </div>
+                
+                <div class="form-group">
+                    <label>Rating</label>
+                    <div class="rating-group">
+                        <input type="radio" id="rating-1" name="rating" value="1" required>
+                        <label for="rating-1">★</label>
+                        
+                        <input type="radio" id="rating-2" name="rating" value="2">
+                        <label for="rating-2">★</label>
+                        
+                        <input type="radio" id="rating-3" name="rating" value="3">
+                        <label for="rating-3">★</label>
+                        
+                        <input type="radio" id="rating-4" name="rating" value="4">
+                        <label for="rating-4">★</label>
+                        
+                        <input type="radio" id="rating-5" name="rating" value="5">
+                        <label for="rating-5">★</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="comment">Comment</label>
+                    <textarea id="comment" name="comment" placeholder="Share your experience..."></textarea>
+                </div>
+                
+                <div class="loading" id="loading">
+                    <div class="loading-spinner"></div>
+                    <p style="margin-top: 1.25rem;">Submitting your feedback...</p>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" id="submitBtn">Submit Feedback</button>
+            </form>
+        <% } else { %>
+            <div id="message" class="message info" style="display: block;">
+                <p>Provide your feedback for this event.</p>
+            </div>
+            <form class="feedback-form" id="feedbackForm">
+                <div id="message" class="message"></div>
+                
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email">
+                </div>
+                
+                <div class="form-group">
+                    <label>Rating</label>
+                    <div class="rating-group">
+                        <input type="radio" id="rating-1" name="rating" value="1" required>
+                        <label for="rating-1">★</label>
+                        
+                        <input type="radio" id="rating-2" name="rating" value="2">
+                        <label for="rating-2">★</label>
+                        
+                        <input type="radio" id="rating-3" name="rating" value="3">
+                        <label for="rating-3">★</label>
+                        
+                        <input type="radio" id="rating-4" name="rating" value="4">
+                        <label for="rating-4">★</label>
+                        
+                        <input type="radio" id="rating-5" name="rating" value="5">
+                        <label for="rating-5">★</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="comment">Comment</label>
+                    <textarea id="comment" name="comment" placeholder="Share your experience..."></textarea>
+                </div>
+                
+                <div class="loading" id="loading">
+                    <div class="loading-spinner"></div>
+                    <p style="margin-top: 1.25rem;">Submitting your feedback...</p>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" id="submitBtn">Submit Feedback</button>
+            </form>
+        <% } %>
+        
+        <div class="form-footer">
+            <p><a href="/events">← Back to all events</a></p>
+        </div>
+    </div>
+    
+    <%- include('footer') %>
+    
+    <script>
+        document.getElementById('feedbackForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const form = this;
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const message = document.getElementById('message');
+            
+            // Check if rating is selected
+            const ratingSelected = document.querySelector('input[name="rating"]:checked');
+            if (!ratingSelected) {
+                message.className = 'message error';
+                message.textContent = 'Please select a rating';
+                message.style.display = 'block';
+                return;
+            }
+            
+            // Show loading, hide message
+            submitBtn.disabled = true;
+            loading.style.display = 'block';
+            message.style.display = 'none';
+            
+            try {
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData);
+                
+                const response = await fetch('/feedback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    // Show success message
+                    message.className = 'message success';
+                    message.textContent = 'Feedback submitted successfully! Redirecting to events page...';
+                    message.style.display = 'block';
+                    
+                    // Redirect after a short delay
+                    setTimeout(() => {
+                        window.location.href = '/events';
+                    }, 2000);
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Feedback submission failed');
+                }
+            } catch (error) {
+                // Show error message
+                message.className = 'message error';
+                message.textContent = error.message || 'An error occurred while submitting feedback';
+                message.style.display = 'block';
+            } finally {
+                // Hide loading, enable submit button
+                loading.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

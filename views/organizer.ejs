@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizer Dashboard - Campus Event Hub</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .organizer-dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2.5rem;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        
+        .dashboard-title {
+            margin: 0;
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .welcome-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: var(--text-white);
+            padding: 2.5rem;
+            border-radius: 16px;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 8px 30px var(--shadow-medium);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxjaXJjbGUgY3g9IjIwIiBjeT0iMjAiIHI9IjAuNSIgZmlsbD0iI2ZmZiIgZmlsbC1vcGFjaXR5PSIwLjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjcGF0dGVybikiLz48L3N2Zz4=');
+            opacity: 0.1;
+        }
+        
+        .welcome-card h2 {
+            margin-top: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .welcome-card p {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto 1.75rem;
+            font-weight: 300;
+        }
+        
+        .dashboard-section {
+            background: var(--bg-white);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px var(--shadow-light);
+            margin-bottom: 2.5rem;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .section-title {
+            margin-top: 0;
+            color: var(--primary-color);
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-dark);
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+        
+        .form-group {
+            margin-bottom: 1.75rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+        
+        .form-group input, 
+        .form-group textarea, 
+        .form-group select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            font-size: 1.05rem;
+            background-color: var(--bg-light);
+        }
+        
+        .form-group input:focus, 
+        .form-group textarea:focus, 
+        .form-group select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.3rem rgba(0, 123, 255, 0.15);
+            outline: none;
+            background-color: var(--bg-white);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.75rem;
+        }
+        
+        .events-list {
+            margin-top: 2.5rem;
+        }
+        
+        .events-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        
+        .event-item {
+            background: var(--bg-white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 6px 24px var(--shadow-light);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .event-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+        }
+        
+        .event-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 40px var(--shadow-medium);
+        }
+        
+        .event-item h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.4rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        .event-details {
+            margin: 1.25rem 0;
+            flex-grow: 1;
+        }
+        
+        .event-details p {
+            margin: 0.6rem 0;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .event-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 1.25rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border-dark);
+        }
+        
+        .guest-message {
+            text-align: center;
+            padding: 2.5rem;
+            background-color: var(--bg-light);
+            border-radius: 16px;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 6px 24px var(--shadow-light);
+        }
+        
+        /* Enhanced responsive design */
+        @media (max-width: 1200px) {
+            .organizer-dashboard {
+                max-width: 95%;
+                padding: 2rem;
+            }
+            
+            .events-container {
+                grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .organizer-dashboard {
+                padding: 2rem;
+            }
+            
+            .dashboard-header {
+                text-align: center;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .events-container {
+                grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .organizer-dashboard {
+                padding: 1.5rem;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-section {
+                padding: 2rem;
+            }
+            
+            .welcome-card {
+                padding: 2rem;
+            }
+            
+            .events-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .organizer-dashboard {
+                padding: 1.25rem;
+            }
+            
+            .dashboard-title {
+                font-size: 1.7rem;
+            }
+            
+            .welcome-card {
+                padding: 1.75rem;
+            }
+            
+            .dashboard-section {
+                padding: 1.75rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .form-group {
+                margin-bottom: 1.5rem;
+            }
+            
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: 0.85rem;
+                font-size: 1rem;
+            }
+            
+            .event-item {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .organizer-dashboard {
+                padding: 1rem;
+            }
+            
+            .dashboard-title {
+                font-size: 1.5rem;
+            }
+            
+            .welcome-card {
+                padding: 1.5rem;
+            }
+            
+            .dashboard-section {
+                padding: 1.5rem;
+            }
+            
+            .section-title {
+                font-size: 1.35rem;
+            }
+            
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: 0.75rem;
+                font-size: 0.95rem;
+            }
+            
+            .event-item {
+                padding: 1.25rem;
+            }
+            
+            .event-item h3 {
+                font-size: 1.15rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('header') %>
+
+    <main>
+        <section class="organizer-dashboard">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Organizer Dashboard</h1>
+                <div>
+                </div>
+            </div>
+            
+            <div class="welcome-card">
+                <h2>Create Amazing Campus Events</h2>
+                <p>Manage your events, track registrations, and engage with students through feedback.</p>
+            </div>
+            
+            <div class="dashboard-section">
+                <h2 class="section-title">Create New Event</h2>
+                <form action="/organizer/create-event" method="POST" id="createEventForm">
+                    <div class="form-group">
+                        <label for="title">Event Title</label>
+                        <input type="text" id="title" name="title" required placeholder="Enter event title">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" rows="4" required placeholder="Describe your event"></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="date">Date</label>
+                            <input type="date" id="date" name="date" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="time">Time</label>
+                            <input type="time" id="time" name="time" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" name="location" required placeholder="Enter event location">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="organizer">Organizer Name</label>
+                        <input type="text" id="organizer" name="organizer" value="Guest Organizer" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Create Event</button>
+                </form>
+            </div>
+            
+            <% if (typeof events !== 'undefined' && events.length > 0) { %>
+            <div class="dashboard-section">
+                <h2 class="section-title">Your Events</h2>
+                <div class="events-list">
+                    <div class="events-container">
+                        <% events.slice(0, 3).forEach(function(event) { %>
+                            <div class="event-item">
+                                <h3><%= event.title %></h3>
+                                <p><%= event.description %></p>
+                                <div class="event-details">
+                                    <p><strong>Date:</strong> <%= event.date %> at <%= event.time %></p>
+                                    <p><strong>Location:</strong> <%= event.location %></p>
+                                </div>
+                                <div class="event-meta">
+                                    <span>Created: <%= new Date(event.createdAt).toLocaleDateString() %></span>
+                                </div>
+                                
+                                <!-- Social Sharing Buttons -->
+                                <div class="social-sharing" style="margin: 1.25rem 0; padding: 1.25rem 0; border-top: 1px solid var(--border-dark);">
+                                    <p style="margin: 0 0 0.6rem 0; font-weight: bold; font-size: 0.95rem;">Share this event:</p>
+                                    <div class="sharing-buttons" style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                                        <a href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent('http://localhost:3002/events') %>&quote=<%= encodeURIComponent(event.title + ' - ' + event.description) %>" target="_blank" class="btn btn-secondary">
+                                            Facebook
+                                        </a>
+                                        <a href="https://twitter.com/intent/tweet?text=<%= encodeURIComponent(event.title + ' - ' + event.description + ' #CampusEvent') %>&url=<%= encodeURIComponent('http://localhost:3002/events') %>" target="_blank" class="btn btn-secondary">
+                                            Twitter
+                                        </a>
+                                        <a href="https://wa.me/?text=<%= encodeURIComponent(event.title + ' - ' + event.description + ' Check out this event: http://localhost:3002/events') %>" target="_blank" class="btn btn-secondary">
+                                            WhatsApp
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </section>
+    </main>
+
+    <%- include('footer') %>
+    
+    <script>
+        // Set min date to today for event creation
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').min = today;
+        });
+        
+        // Add form submission handling
+        document.getElementById('createEventForm').addEventListener('submit', function() {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<div class="loading-spinner" style="width: 24px; height: 24px; border-width: 3px; margin: 0 auto;"></div>';
+        });
+    </script>
+</body>
+</html>

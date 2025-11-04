@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Registration - Campus Event Hub</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .registration-container {
+            max-width: 650px;
+            margin: 3rem auto;
+            padding: 2.75rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            animation: fadeIn 0.6s ease-out;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .registration-header {
+            text-align: center;
+            margin-bottom: 2.25rem;
+        }
+        
+        .registration-header h1 {
+            color: #007bff;
+            margin-bottom: 0.6rem;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .registration-header p {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+        
+        .event-details-card {
+            background-color: #f8f9fa;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2.25rem;
+            border-left: 4px solid #007bff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .event-details-card h3 {
+            margin-top: 0;
+            color: #007bff;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 1.75rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+            color: #495057;
+            font-size: 1.05rem;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            font-size: 1.05rem;
+            background-color: #f8f9fa;
+        }
+        
+        .form-group input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.3rem rgba(0, 123, 255, 0.15);
+            outline: none;
+            background-color: white;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 12px var(--shadow-light);
+            min-height: 46px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px var(--shadow-medium);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 12px var(--shadow-light);
+        }
+        
+        .btn:disabled {
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Button variants */
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--text-white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: var(--text-white);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            color: var(--text-white);
+        }
+        
+        .btn-success:hover {
+            background-color: var(--success-dark);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: var(--text-white);
+        }
+        
+        .btn-danger:hover {
+            background-color: var(--danger-dark);
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: var(--text-primary);
+        }
+        
+        .btn-warning:hover {
+            background-color: var(--warning-dark);
+        }
+        
+        .btn-info {
+            background-color: var(--info-color);
+            color: var(--text-white);
+        }
+        
+        .btn-info:hover {
+            background-color: var(--info-dark);
+        }
+        
+        .btn-light {
+            background-color: var(--bg-light);
+            color: var(--text-primary);
+        }
+        
+        .btn-light:hover {
+            background-color: #e2e6ea;
+        }
+        
+        .btn-dark {
+            background-color: var(--dark-color);
+            color: var(--text-white);
+        }
+        
+        .btn-dark:hover {
+            background-color: #23272b;
+        }
+        
+        /* Dark mode button variants */
+        .dark-mode .btn {
+            box-shadow: 0 4px 12px var(--shadow-medium);
+        }
+        
+        .dark-mode .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--text-white);
+        }
+        
+        .dark-mode .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .dark-mode .btn-secondary {
+            background-color: var(--secondary-color);
+            color: var(--text-white);
+        }
+        
+        .dark-mode .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .dark-mode .btn-success {
+            background-color: var(--success-color);
+            color: var(--text-white);
+        }
+        
+        .dark-mode .btn-success:hover {
+            background-color: var(--success-dark);
+        }
+        
+        .dark-mode .btn-danger {
+            background-color: var(--danger-color);
+            color: var(--text-white);
+        }
+        
+        .dark-mode .btn-danger:hover {
+            background-color: var(--danger-dark);
+        }
+        
+        .dark-mode .btn-warning {
+            background-color: var(--warning-color);
+            color: var(--text-primary);
+        }
+        
+        .dark-mode .btn-warning:hover {
+            background-color: var(--warning-dark);
+        }
+        
+        .dark-mode .btn-info {
+            background-color: var(--info-color);
+            color: var(--text-white);
+        }
+        
+        .dark-mode .btn-info:hover {
+            background-color: var(--info-dark);
+        }
+        
+        .dark-mode .btn-light {
+            background-color: var(--bg-light);
+            color: var(--text-primary);
+        }
+        
+        .dark-mode .btn-light:hover {
+            background-color: #3d3d3d;
+        }
+        
+        .dark-mode .btn-dark {
+            background-color: var(--dark-color);
+            color: var(--text-white);
+        }
+        
+        .dark-mode .btn-dark:hover {
+            background-color: #121416;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 1.25rem 0;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .message {
+            padding: 1.25rem;
+            margin: 1.25rem 0;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .message.info {
+            background-color: #cce5ff;
+            color: #004085;
+            border: 1px solid #b8daff;
+        }
+        
+        .form-footer {
+            text-align: center;
+            margin-top: 1.75rem;
+            padding-top: 1.75rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .form-footer a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 576px) {
+            .registration-container {
+                margin: 1.5rem;
+                padding: 2rem;
+            }
+            
+            .registration-header h1 {
+                font-size: 1.7rem;
+            }
+            
+            .event-details-card {
+                padding: 1.5rem;
+            }
+            
+            .form-group {
+                margin-bottom: 1.5rem;
+            }
+            
+            .form-group input {
+                padding: 0.85rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('header') %>
+    
+    <div class="registration-container">
+        <div class="registration-header">
+            <h1>Event Registration</h1>
+            <p>Register for this exciting campus event</p>
+        </div>
+        
+        <div class="event-details-card">
+            <h3>Event Registration</h3>
+            <div id="eventDetails">
+                <p>Loading event details...</p>
+            </div>
+            <input type="hidden" name="eventId" value="<%= eventId %>">
+        </div>
+        
+        <form class="registration-form" id="registrationForm" action="/register" method="POST">
+            <div id="message" class="message"></div>
+            
+            <input type="hidden" name="eventId" value="<%= eventId %>">
+            
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required placeholder="Enter your full name">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your email">
+            </div>
+            
+            <div class="form-group">
+                <label for="studentId">Student ID</label>
+                <input type="text" id="studentId" name="studentId" required placeholder="Enter your student ID">
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p style="margin-top: 1.25rem;">Processing your registration...</p>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" id="submitBtn">Register for Event</button>
+        </form>
+        
+        <div class="form-footer">
+            <p><a href="/events">← Back to all events</a></p>
+        </div>
+    </div>
+    
+    <%- include('footer') %>
+    
+    <script>
+        // Add form submission handling
+        document.getElementById('registrationForm').addEventListener('submit', function() {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<div class="loading-spinner" style="width: 24px; height: 24px; border-width: 3px; margin: 0 auto;"></div>';
+        });
+        
+        // Fetch and display event details
+        document.addEventListener('DOMContentLoaded', async function() {
+            const eventId = '<%= eventId %>';
+            const eventDetails = document.getElementById('eventDetails');
+            
+            try {
+                // Fetch event data from API
+                const response = await fetch(`/api/event-details/${eventId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch event details');
+                }
+                
+                const event = await response.json();
+                
+                // Check if event date has passed
+                const eventDate = new Date(event.date);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0); // Reset time part for comparison
+                
+                if (eventDate < today) {
+                    eventDetails.innerHTML = `
+                        <p><strong>Event:</strong> ${event.title}</p>
+                        <p><strong>Date:</strong> ${event.date} at ${event.time}</p>
+                        <p><strong>Location:</strong> ${event.location}</p>
+                        <p style="color: #dc3545; font-weight: bold; margin-top: 1rem;">This event date has already passed. Registration is no longer available.</p>
+                    `;
+                    // Disable the registration form
+                    document.getElementById('registrationForm').style.display = 'none';
+                } else {
+                    eventDetails.innerHTML = `
+                        <p><strong>Event:</strong> ${event.title}</p>
+                        <p><strong>Date:</strong> ${event.date} at ${event.time}</p>
+                        <p><strong>Location:</strong> ${event.location}</p>
+                        <p><strong>Organizer:</strong> ${event.organizer}</p>
+                    `;
+                }
+            } catch (error) {
+                eventDetails.innerHTML = `<p style="color: #dc3545;">Error loading event details: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

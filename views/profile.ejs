@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Campus Event Hub</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .profile-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .profile-header h1 {
+            color: #007bff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #007bff;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+        
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .info-card {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .info-card h3 {
+            margin-top: 0;
+            color: #007bff;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 0.5rem;
+        }
+        
+        .info-item {
+            display: flex;
+            margin-bottom: 0.75rem;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            width: 120px;
+            color: #495057;
+        }
+        
+        .info-value {
+            flex: 1;
+            color: #343a40;
+        }
+        
+        .role-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .role-student {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .role-organizer {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .role-admin {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .role-guest {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .profile-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.3s ease;
+            min-height: 44px; /* Better touch targets */
+            min-width: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #545b62;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .section-title {
+            color: #007bff;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .guest-message {
+            text-align: center;
+            padding: 2rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        /* Enhanced responsive design */
+        @media (max-width: 1200px) {
+            .profile-container {
+                max-width: 95%;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .profile-container {
+                padding: 1.75rem;
+            }
+            
+            .profile-info {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .profile-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            .profile-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .info-label {
+                width: 100px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .profile-container {
+                margin: 0.75rem;
+                padding: 1.25rem;
+            }
+            
+            .profile-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .profile-avatar {
+                width: 80px;
+                height: 80px;
+                font-size: 2rem;
+            }
+            
+            .info-card {
+                padding: 1.25rem;
+            }
+            
+            .info-item {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+            
+            .info-label {
+                width: 100%;
+            }
+            
+            .btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.95rem;
+                min-height: 40px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .profile-container {
+                margin: 0.5rem;
+                padding: 1rem;
+            }
+            
+            .profile-header h1 {
+                font-size: 1.3rem;
+            }
+            
+            .profile-avatar {
+                width: 70px;
+                height: 70px;
+                font-size: 1.8rem;
+            }
+            
+            .info-card {
+                padding: 1rem;
+            }
+            
+            .info-card h3 {
+                font-size: 1.1rem;
+            }
+            
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+                min-height: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('header') %>
+    
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <%= typeof user !== 'undefined' && user !== null && user.name ? user.name.charAt(0).toUpperCase() : 'G' %>
+            </div>
+            <h1><%= typeof user !== 'undefined' && user !== null && user.name ? user.name : 'Guest User' %></h1>
+            <p><%= typeof user !== 'undefined' && user !== null && user.email ? user.email : 'Not logged in' %></p>
+        </div>
+        
+        <% if (typeof user !== 'undefined' && user !== null && user.role !== 'guest') { %>
+            <div class="profile-info">
+                <div class="info-card">
+                    <h3>Account Information</h3>
+                    <div class="info-item">
+                        <div class="info-label">Name:</div>
+                        <div class="info-value"><%= typeof user.name !== 'undefined' ? user.name : 'N/A' %></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Email:</div>
+                        <div class="info-value"><%= typeof user.email !== 'undefined' ? user.email : 'N/A' %></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Role:</div>
+                        <div class="info-value">
+                            <span class="role-badge role-<%= typeof user.role !== 'undefined' ? user.role : 'guest' %>">
+                                <%= typeof user.role !== 'undefined' ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'Guest' %>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Member Since:</div>
+                        <div class="info-value"><%= typeof user !== 'undefined' && typeof user.createdAt !== 'undefined' ? new Date(user.createdAt).toLocaleDateString() : 'N/A' %></div>
+                    </div>
+                </div>
+                
+                <% if (user.studentId) { %>
+                <div class="info-card">
+                    <h3>Student Information</h3>
+                    <div class="info-item">
+                        <div class="info-label">Student ID:</div>
+                        <div class="info-value"><%= typeof user.studentId !== 'undefined' ? user.studentId : 'N/A' %></div>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+            
+            <h3 class="section-title">Quick Actions</h3>
+            <div class="profile-actions">
+                <% if (user.role === 'student') { %>
+                    <a href="/events" class="btn btn-primary">Browse Events</a>
+                    <a href="/student/registrations" class="btn btn-secondary">My Registrations</a>
+                    <a href="/student/registrations/export" class="btn btn-secondary">Export to Spreadsheet</a>
+                <% } else if (user.role === 'organizer') { %>
+                    <a href="/organizer" class="btn btn-primary">Create Event</a>
+                    <a href="/organizer/my-events" class="btn btn-secondary">My Events</a>
+                    <a href="/events" class="btn btn-secondary">Browse Events</a>
+                <% } else if (user.role === 'admin') { %>
+                    <a href="/admin" class="btn btn-primary">Admin Panel</a>
+                    <a href="/events" class="btn btn-secondary">Browse Events</a>
+                <% } %>
+                
+                <button id="logoutBtn" class="btn btn-danger">Logout</button>
+            </div>
+        <% } else { %>
+            <div class="guest-message">
+                <h3>Welcome, Guest!</h3>
+                <p>You are currently browsing as a guest user. To access all features, please log in or register.</p>
+                <div style="margin-top: 1rem;">
+                    <a href="/auth/login" class="btn btn-primary" style="margin-right: 1rem;">Login</a>
+                    <a href="/auth/register" class="btn btn-secondary">Register</a>
+                </div>
+            </div>
+            
+            <h3 class="section-title">Available Actions</h3>
+            <div class="profile-actions">
+                <a href="/events" class="btn btn-primary">Browse Events</a>
+                <a href="/organizer" class="btn btn-secondary">View Organizer Page</a>
+                <a href="/admin" class="btn btn-secondary">View Admin Panel</a>
+            </div>
+        <% } %>
+    </div>
+    
+    <%- include('footer') %>
+    
+    <% if (typeof user !== 'undefined' && user !== null && user.role !== 'guest') { %>
+        <script>
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                // Show confirmation
+                if (confirm('Are you sure you want to logout?')) {
+                    // Clear token from localStorage
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    
+                    // Show notification
+                    showNotification('You have been logged out successfully', 'info');
+                    
+                    // Redirect to login page
+                    setTimeout(() => {
+                        window.location.href = '/auth/login';
+                    }, 1000);
+                }
+            });
+        </script>
+    <% } %>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Registrations - Campus Event Hub</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .registrations-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .page-title {
+            margin: 0;
+            color: var(--primary-color);
+        }
+        
+        .export-button {
+            background-color: var(--success-color);
+            color: var(--text-white);
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            min-height: 44px; /* Better touch targets */
+            min-width: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .export-button:hover {
+            background-color: var(--success-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow-dark);
+        }
+        
+        .dark-mode .export-button {
+            background-color: var(--success-color);
+            color: var(--text-white);
+        }
+        
+        .dark-mode .export-button:hover {
+            background-color: var(--success-dark);
+        }
+        
+        .registrations-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px var(--shadow-light);
+        }
+        
+        .registrations-table th {
+            background-color: var(--primary-color);
+            color: var(--text-white);
+            text-align: left;
+            padding: 1rem;
+            font-weight: 600;
+        }
+        
+        .registrations-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-dark);
+        }
+        
+        .registrations-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .registrations-table tr:hover {
+            background-color: var(--bg-light);
+        }
+        
+        .cancel-button {
+            background-color: var(--danger-color);
+            color: var(--text-white);
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        .cancel-button:hover {
+            background-color: var(--danger-dark);
+        }
+        
+        .dark-mode .cancel-button {
+            background-color: var(--danger-color);
+            color: var(--text-white);
+        }
+        
+        .dark-mode .cancel-button:hover {
+            background-color: var(--danger-dark);
+        }
+        
+        .no-registrations {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+            background: var(--bg-white);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px var(--shadow-light);
+        }
+        
+        .no-registrations h3 {
+            margin-top: 0;
+            color: var(--text-secondary);
+        }
+        
+        /* Enhanced responsive design */
+        @media (max-width: 1200px) {
+            .registrations-container {
+                max-width: 95%;
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .registrations-container {
+                padding: 1.5rem;
+            }
+            
+            .page-header {
+                text-align: center;
+            }
+            
+            .registrations-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .registrations-container {
+                padding: 1rem;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .registrations-table th,
+            .registrations-table td {
+                padding: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .registrations-container {
+                padding: 0.75rem;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            .export-button {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.95rem;
+                min-height: 40px;
+            }
+            
+            .registrations-table th,
+            .registrations-table td {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .registrations-container {
+                padding: 0.5rem;
+            }
+            
+            .page-title {
+                font-size: 1.3rem;
+            }
+            
+            .export-button {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+                min-height: 36px;
+            }
+            
+            .registrations-table th,
+            .registrations-table td {
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('header') %>
+
+    <main>
+        <section class="registrations-container">
+            <div class="page-header">
+                <h1 class="page-title">Event Registrations</h1>
+                <a href="/student/registrations/export" class="btn btn-success">Export to Spreadsheet</a>
+            </div>
+            
+            <% if (typeof cancelled !== 'undefined' && cancelled === 'true') { %>
+                <div style="background-color: #d4edda; color: #155724; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; border: 1px solid #c3e6cb;">
+                    <p style="margin: 0; font-weight: bold;">Registration successfully cancelled!</p>
+                </div>
+            <% } %>
+            
+            <% if (typeof registrations !== 'undefined' && registrations.length > 0) { %>
+                <table class="registrations-table">
+                    <thead>
+                        <tr>
+                            <th>Event Name</th>
+                            <th>Date</th>
+                            <th>Location</th>
+                            <th>Organiser</th>
+                            <th>Registered On</th>
+                            <th>Student Name</th>
+
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% registrations.forEach(function(registration) { %>
+                            <tr>
+                                <td><%= registration.event ? registration.event.title : 'Unknown Event' %></td>
+                                <td><%= registration.event ? registration.event.date + ' at ' + registration.event.time : 'N/A' %></td>
+                                <td><%= registration.event ? registration.event.location : 'N/A' %></td>
+                                <td><%= registration.event ? registration.event.organizer : 'N/A' %></td>
+                                <td><%= new Date(registration.registeredAt).toLocaleDateString() %></td>
+                                <td><%= registration.studentName || 'N/A' %></td>
+                                <td>
+                                    <span style="color: #6c757d;">N/A</span>
+                                </td>
+                                <td>
+                                    <form action="/student/cancel-registration/<%= registration._id %>" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to cancel your registration for this event?');">
+                                        <button type="submit" class="btn btn-danger">Cancel</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <div class="no-registrations">
+                    <h3>No registrations found</h3>
+                    <p>There are currently no event registrations.</p>
+                    <a href="/events" class="btn btn-primary" style="display: inline-block; margin-top: 1rem;">Browse Events</a>
+                </div>
+            <% } %>
+        </section>
+    </main>
+
+    <%- include('footer') %>
+</body>
+</html>

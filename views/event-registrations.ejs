@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Registrations - Campus Event Hub</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .registrations-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .page-title {
+            margin: 0;
+            color: #007bff;
+        }
+        
+        .event-details-card {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .event-details-card h2 {
+            margin-top: 0;
+            font-size: 1.8rem;
+        }
+        
+        .event-details-card p {
+            margin: 0.5rem 0;
+            font-size: 1.1rem;
+        }
+        
+        .registrations-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .registrations-title {
+            margin: 0;
+            color: #007bff;
+        }
+        
+        .registrations-count {
+            background-color: #007bff;
+            color: white;
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .registrations-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .registrations-table th {
+            background-color: #007bff;
+            color: white;
+            text-align: left;
+            padding: 1rem;
+            font-weight: 600;
+        }
+        
+        .registrations-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .registrations-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .registrations-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .no-registrations {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .no-registrations h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.3s ease;
+            min-height: 44px; /* Better touch targets */
+            min-width: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #545b62;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        /* Enhanced responsive design */
+        @media (max-width: 1200px) {
+            .registrations-container {
+                max-width: 95%;
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .registrations-container {
+                padding: 1.5rem;
+            }
+            
+            .page-header {
+                text-align: center;
+            }
+            
+            .event-details-card {
+                padding: 1.5rem;
+            }
+            
+            .event-details-card h2 {
+                font-size: 1.6rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .registrations-container {
+                padding: 1rem;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .registrations-header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            
+            .registrations-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .event-details-card {
+                padding: 1.25rem;
+            }
+            
+            .event-details-card h2 {
+                font-size: 1.4rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .registrations-container {
+                padding: 0.75rem;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            .event-details-card {
+                padding: 1rem;
+            }
+            
+            .event-details-card h2 {
+                font-size: 1.3rem;
+            }
+            
+            .event-details-card p {
+                font-size: 1rem;
+            }
+            
+            .registrations-table th,
+            .registrations-table td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.95rem;
+                min-height: 40px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .registrations-container {
+                padding: 0.5rem;
+            }
+            
+            .page-title {
+                font-size: 1.3rem;
+            }
+            
+            .event-details-card {
+                padding: 0.8rem;
+            }
+            
+            .event-details-card h2 {
+                font-size: 1.2rem;
+            }
+            
+            .event-details-card p {
+                font-size: 0.9rem;
+            }
+            
+            .registrations-table th,
+            .registrations-table td {
+                padding: 0.5rem 0.4rem;
+                font-size: 0.85rem;
+            }
+            
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+                min-height: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('header') %>
+
+    <main>
+        <section class="registrations-container">
+            <div class="page-header">
+                <h1 class="page-title">Event Management</h1>
+                <a href="/organizer/my-events" class="btn btn-secondary">← Back to My Events</a>
+            </div>
+            
+            <% if (typeof event !== 'undefined' && event) { %>
+                <div class="event-details-card">
+                    <h2><%= event.title %></h2>
+                    <p><%= event.description %></p>
+                    <p><strong>Date:</strong> <%= event.date %> at <%= event.time %></p>
+                    <p><strong>Location:</strong> <%= event.location %></p>
+                    <p><strong>Organizer:</strong> <%= event.organizer %></p>
+                    <% if (event.fee && event.fee > 0) { %>
+                        <p><strong>Fee:</strong> <span style="color: #28a745; font-weight: bold;">UGX <%= event.fee.toLocaleString() %></span></p>
+                    <% } else { %>
+                        <p><strong>Fee:</strong> <span style="color: #007bff; font-weight: bold;">Free Event</span></p>
+                    <% } %>
+                    
+                    <!-- Social Sharing Buttons -->
+                    <div class="social-sharing" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.2);">
+                        <p style="margin: 0 0 0.5rem 0; font-weight: bold;">Share this event:</p>
+                        <div class="sharing-buttons" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent('http://localhost:3002/events') %>&quote=<%= encodeURIComponent(event.title + ' - ' + event.description) %>" target="_blank" class="btn btn-secondary" style="background-color: #3b5998; border-color: #3b5998; font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                Facebook
+                            </a>
+                            <a href="https://twitter.com/intent/tweet?text=<%= encodeURIComponent(event.title + ' - ' + event.description + ' #CampusEvent') %>&url=<%= encodeURIComponent('http://localhost:3002/events') %>" target="_blank" class="btn btn-secondary" style="background-color: #1da1f2; border-color: #1da1f2; font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                Twitter
+                            </a>
+                            <a href="https://wa.me/?text=<%= encodeURIComponent(event.title + ' - ' + event.description + ' Check out this event: http://localhost:3002/events') %>" target="_blank" class="btn btn-secondary" style="background-color: #25D366; border-color: #25D366; font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="registrations-header">
+                    <h2 class="registrations-title">Registered Students</h2>
+                    <div class="registrations-count"><%= typeof registrations !== 'undefined' ? registrations.length : 0 %> Registrations</div>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="/organizer/event/<%= event._id %>/registrations/export/excel" class="btn btn-success">Export to Excel</a>
+                    <a href="/organizer/event/<%= event._id %>/registrations/export/pdf" class="btn btn-primary">Export to PDF</a>
+                </div>
+                
+                <% if (typeof registrations !== 'undefined' && registrations.length > 0) { %>
+                    <table class="registrations-table">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Email</th>
+                                <th>Student ID</th>
+                                <th>Registration Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% registrations.forEach(function(registration) { %>
+                                <tr>
+                                    <td><%= registration.studentName %></td>
+                                    <td><%= registration.studentEmail %></td>
+                                    <td><%= registration.studentId %></td>
+                                    <td><%= new Date(registration.registeredAt).toLocaleDateString() %></td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                <% } else { %>
+                    <div class="no-registrations">
+                        <h3>No Registrations Yet</h3>
+                        <p>There are currently no students registered for this event.</p>
+                    </div>
+                <% } %>
+            <% } else { %>
+                <div class="no-registrations">
+                    <h3>Event Not Found</h3>
+                    <p>The requested event could not be found.</p>
+                    <a href="/organizer/my-events" class="btn btn-primary" style="display: inline-block; margin-top: 1rem;">Back to My Events</a>
+                </div>
+            <% } %>
+        </section>
+    </main>
+
+    <%- include('footer') %>
+</body>
+</html>

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Campus Event Hub</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .settings-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--bg-white);
+            border-radius: 16px;
+            box-shadow: 0 8px 30px var(--shadow-light);
+            animation: fadeIn 0.5s ease-out;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .dark-mode .settings-container {
+            background: var(--bg-light);
+            box-shadow: 0 8px 30px var(--shadow-medium);
+            border: 1px solid var(--border-color);
+        }
+        
+        .settings-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-dark);
+        }
+        
+        .settings-header h1 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .settings-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px var(--shadow-light);
+        }
+        
+        .dark-mode .settings-section {
+            background-color: var(--bg-secondary);
+            box-shadow: 0 4px 12px var(--shadow-medium);
+        }
+        
+        .settings-section h2 {
+            margin-top: 0;
+            color: var(--primary-color);
+            border-bottom: 1px solid var(--border-dark);
+            padding-bottom: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.85rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            background-color: var(--bg-white);
+        }
+        
+        .dark-mode .form-group input,
+        .dark-mode .form-group select {
+            background-color: var(--bg-light);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.3rem rgba(0, 123, 255, 0.15);
+            outline: none;
+            background-color: var(--bg-white);
+        }
+        
+        .dark-mode .form-group input:focus,
+        .dark-mode .form-group select:focus {
+            background-color: var(--bg-light);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+        
+        .checkbox-group label {
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.3s ease;
+            min-height: 46px;
+            min-width: 46px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px var(--shadow-light);
+        }
+        
+        .dark-mode .btn {
+            box-shadow: 0 2px 6px var(--shadow-medium);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--text-white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow-medium);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: var(--text-white);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow-medium);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: var(--text-white);
+        }
+        
+        .btn-danger:hover {
+            background-color: var(--danger-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow-medium);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-dark);
+        }
+        
+        .notification {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        
+        .notification.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .dark-mode .notification.success {
+            background-color: #1e5a2d;
+            color: #d4edda;
+            border: 1px solid #2d8a43;
+        }
+        
+        .notification.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .dark-mode .notification.error {
+            background-color: #5a1e22;
+            color: #f8d7da;
+            border: 1px solid #8a2d32;
+        }
+        
+        /* Enhanced responsive design */
+        @media (max-width: 1200px) {
+            .settings-container {
+                max-width: 95%;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .settings-container {
+                padding: 1.75rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .settings-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .settings-container {
+                margin: 0.75rem;
+                padding: 1.25rem;
+            }
+            
+            .settings-header h1 {
+                font-size: 1.7rem;
+            }
+            
+            .settings-section {
+                padding: 1.25rem;
+            }
+            
+            .settings-section h2 {
+                font-size: 1.3rem;
+            }
+            
+            .form-group {
+                margin-bottom: 1.25rem;
+            }
+            
+            .form-group input,
+            .form-group select {
+                padding: 0.75rem;
+                font-size: 0.95rem;
+            }
+            
+            .btn {
+                padding: 0.65rem 1.25rem;
+                font-size: 0.95rem;
+                min-height: 44px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .settings-container {
+                margin: 0.5rem;
+                padding: 1rem;
+            }
+            
+            .settings-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .settings-section {
+                padding: 1rem;
+            }
+            
+            .settings-section h2 {
+                font-size: 1.2rem;
+            }
+            
+            .btn {
+                padding: 0.55rem 1rem;
+                font-size: 0.9rem;
+                min-height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('header') %>
+    
+    <div class="settings-container">
+        <div class="settings-header">
+            <h1>Settings</h1>
+            <p>Manage your account preferences and settings</p>
+        </div>
+        
+        <div id="notification" class="notification"></div>
+        
+        <% if (typeof user !== 'undefined' && user !== null && user.role !== 'guest') { %>
+            <div class="settings-section">
+                <h2>Profile Settings</h2>
+                <form id="profileSettingsForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" value="<%= typeof user !== 'undefined' && user !== null && user.name ? user.name : '' %>" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" value="<%= typeof user !== 'undefined' && user !== null && user.email ? user.email : '' %>" required>
+                    </div>
+                    
+                    <% if (user.studentId) { %>
+                    <div class="form-group">
+                        <label for="studentId">Student ID</label>
+                        <input type="text" id="studentId" name="studentId" value="<%= user.studentId %>" readonly>
+                    </div>
+                    <% } %>
+                    
+                    <div class="form-group">
+                        <label for="role">Role</label>
+                        <input type="text" id="role" name="role" value="<%= user.role.charAt(0).toUpperCase() + user.role.slice(1) %>" readonly>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="settings-section">
+                <h2>Preferences</h2>
+                <form id="preferencesForm">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="emailNotifications" name="emailNotifications">
+                        <label for="emailNotifications">Email notifications for event updates</label>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="pushNotifications" name="pushNotifications">
+                        <label for="pushNotifications">Push notifications for event reminders</label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="theme">Theme</label>
+                        <select id="theme" name="theme">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="auto">Auto (System)</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="settings-section">
+                <h2>Security</h2>
+                <form id="securityForm">
+                    <div class="form-group">
+                        <label for="currentPassword">Current Password</label>
+                        <input type="password" id="currentPassword" name="currentPassword">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" id="newPassword" name="newPassword">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm New Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword">
+                    </div>
+                </form>
+            </div>
+            
+            <div class="action-buttons">
+                <button type="button" id="saveSettingsBtn" class="btn btn-primary">Save Settings</button>
+                <button type="button" id="resetSettingsBtn" class="btn btn-secondary">Reset Changes</button>
+                <button type="button" id="logoutBtn" class="btn btn-danger">Logout</button>
+            </div>
+        <% } else { %>
+            <div class="guest-message">
+                <h3>Guest User</h3>
+                <p>You are currently browsing as a guest user. Some settings are only available to registered users.</p>
+                <div style="margin-top: 1rem;">
+                    <a href="/auth/login" class="btn btn-primary" style="margin-right: 1rem;">Login</a>
+                    <a href="/auth/register" class="btn btn-secondary">Register</a>
+                </div>
+            </div>
+        <% } %>
+    </div>
+    
+    <%- include('footer') %>
+    
+    <script>
+        // Show notification function
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification ' + type;
+            notification.style.display = 'block';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Save settings
+        document.getElementById('saveSettingsBtn').addEventListener('click', function() {
+            showNotification('Settings saved successfully!', 'success');
+        });
+        
+        // Reset settings
+        document.getElementById('resetSettingsBtn').addEventListener('click', function() {
+            document.getElementById('profileSettingsForm').reset();
+            document.getElementById('preferencesForm').reset();
+            document.getElementById('securityForm').reset();
+            showNotification('Settings reset to default values', 'success');
+        });
+        
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Clear token from localStorage
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                
+                // Show notification
+                showNotification('You have been logged out successfully', 'info');
+                
+                // Redirect to login page
+                setTimeout(() => {
+                    window.location.href = '/auth/login';
+                }, 1000);
+            }
+        });
+        
+        // Set theme based on current preference
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedDarkMode = localStorage.getItem('darkMode');
+            const themeSelect = document.getElementById('theme');
+            
+            if (savedDarkMode === 'enabled') {
+                themeSelect.value = 'dark';
+            } else if (savedDarkMode === 'disabled') {
+                themeSelect.value = 'light';
+            } else {
+                themeSelect.value = 'auto';
+            }
+            
+            // Theme change handler
+            themeSelect.addEventListener('change', function() {
+                const body = document.body;
+                
+                if (this.value === 'dark') {
+                    body.classList.add('dark-mode');
+                    localStorage.setItem('darkMode', 'enabled');
+                } else if (this.value === 'light') {
+                    body.classList.remove('dark-mode');
+                    localStorage.setItem('darkMode', 'disabled');
+                } else {
+                    // Auto - remove dark mode class and clear preference
+                    body.classList.remove('dark-mode');
+                    localStorage.removeItem('darkMode');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

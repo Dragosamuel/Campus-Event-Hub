@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Events - Campus Event Hub</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .events-list {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2.5rem;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        
+        .page-title {
+            margin: 0;
+            color: #007bff;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .search-filters {
+            background-color: #f8f9fa;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.09);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .search-filters form {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            align-items: end;
+        }
+        
+        .search-filters .form-group {
+            flex: 1;
+            min-width: 220px;
+        }
+        
+        .search-filters label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+            color: #495057;
+            font-size: 1.05rem;
+        }
+        
+        .search-filters input,
+        .search-filters select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            font-size: 1.05rem;
+            background-color: white;
+        }
+        
+        .search-filters input:focus,
+        .search-filters select:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 0.3rem rgba(0, 123, 255, 0.15);
+        }
+        
+        .search-filters .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            align-self: flex-end;
+        }
+        
+        .events-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        
+        .event-item {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.09);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .event-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #007bff, #0056b3);
+        }
+        
+        .event-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .event-item h3 {
+            margin-top: 0;
+            color: #007bff;
+            font-size: 1.4rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        .event-details {
+            margin: 1.25rem 0;
+            flex-grow: 1;
+        }
+        
+        .event-details p {
+            margin: 0.6rem 0;
+            color: #495057;
+            line-height: 1.6;
+        }
+        
+        .event-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: auto;
+            flex-wrap: wrap;
+        }
+        
+        .event-actions .btn {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            min-height: 44px;
+        }
+        
+        .no-events {
+            text-align: center;
+            padding: 4rem;
+            color: #6c757d;
+            grid-column: 1 / -1;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.09);
+        }
+        
+        .no-events h3 {
+            margin-top: 0;
+            color: #495057;
+            font-size: 1.5rem;
+        }
+        
+        .event-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 1.25rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid #eee;
+        }
+        
+        /* Enhanced responsive design */
+        @media (max-width: 1200px) {
+            .events-list {
+                max-width: 95%;
+                padding: 2rem;
+            }
+            
+            .events-container {
+                grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .events-list {
+                padding: 2rem;
+            }
+            
+            .page-header {
+                text-align: center;
+            }
+            
+            .events-container {
+                grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .events-list {
+                padding: 1.5rem;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-filters form {
+                flex-direction: column;
+            }
+            
+            .search-filters .form-group {
+                min-width: auto;
+            }
+            
+            .search-filters .btn-group {
+                align-self: stretch;
+                flex-direction: column;
+            }
+            
+            .events-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .event-actions {
+                flex-direction: column;
+            }
+            
+            .event-item {
+                padding: 1.75rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .events-list {
+                padding: 1.25rem;
+            }
+            
+            .search-filters {
+                padding: 1.75rem;
+            }
+            
+            .search-filters input,
+            .search-filters select {
+                padding: 0.85rem;
+                font-size: 1rem;
+            }
+            
+            .event-item {
+                padding: 1.5rem;
+            }
+            
+            .event-item h3 {
+                font-size: 1.25rem;
+            }
+            
+            .event-details p {
+                font-size: 0.95rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .events-list {
+                padding: 1rem;
+            }
+            
+            .page-title {
+                font-size: 1.7rem;
+            }
+            
+            .search-filters {
+                padding: 1.5rem;
+            }
+            
+            .event-item {
+                padding: 1.25rem;
+            }
+            
+            .event-item h3 {
+                font-size: 1.15rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('header') %>
+
+    <main>
+        <section class="events-list">
+            <div class="page-header">
+                <h1 class="page-title">All Campus Events</h1>
+                <a href="/organizer" class="btn btn-primary">Create New Event</a>
+            </div>
+            
+            <% if (typeof registered !== 'undefined' && registered === true) { %>
+                <div class="notification success" style="margin-bottom: 2rem;">
+                    <p>✅ Registration successful!</p>
+                </div>
+            <% } %>
+            
+            <div class="search-filters">
+                <form id="searchForm">
+                    <div class="form-group">
+                        <label for="search">Search Events:</label>
+                        <input type="text" id="search" name="search" placeholder="Search by title or description">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="organizer">Filter by Organizer:</label>
+                        <input type="text" id="organizer" name="organizer" placeholder="Organizer name">
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                        <button type="button" class="btn btn-secondary" id="clearFilters">Clear</button>
+                    </div>
+                </form>
+            </div>
+            
+            <% if (typeof events !== 'undefined' && events.length > 0) { %>
+                <div class="events-container">
+                    <% events.forEach(function(event, index) { %>
+                        <div class="event-item fade-in">
+                            <h3><%= event.title %></h3>
+                            <p><%= event.description %></p>
+                            <div class="event-details">
+                                <p><strong>Date:</strong> <%= event.date %> at <%= event.time %></p>
+                                <p><strong>Location:</strong> <%= event.location %></p>
+                                <p><strong>Organizer:</strong> <%= event.organizer %></p>
+                            </div>
+                            <div class="event-meta">
+                                <span>Created: <%= new Date(event.createdAt).toLocaleDateString() %></span>
+                            </div>
+                            
+                            <!-- Social Sharing Buttons -->
+                            <div class="social-sharing" style="margin: 1.25rem 0; padding: 1.25rem 0; border-top: 1px solid var(--border-dark);">
+                                <p style="margin: 0 0 0.6rem 0; font-weight: bold; font-size: 0.95rem;">Share this event:</p>
+                                <div class="sharing-buttons" style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent('http://localhost:3002/events') %>&quote=<%= encodeURIComponent(event.title + ' - ' + event.description) %>" target="_blank" class="btn btn-secondary">
+                                        Facebook
+                                    </a>
+                                    <a href="https://twitter.com/intent/tweet?text=<%= encodeURIComponent(event.title + ' - ' + event.description + ' #CampusEvent') %>&url=<%= encodeURIComponent('http://localhost:3002/events') %>" target="_blank" class="btn btn-secondary">
+                                        Twitter
+                                    </a>
+                                    <a href="https://wa.me/?text=<%= encodeURIComponent(event.title + ' - ' + event.description + ' Check out this event: http://localhost:3002/events') %>" target="_blank" class="btn btn-secondary">
+                                        WhatsApp
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="event-actions">
+                                <a href="/register/<%= event._id %>" class="btn btn-primary">Register</a>
+                                <a href="/feedback/<%= event._id %>" class="btn btn-secondary">Give Feedback</a>
+                                <a href="/organizer/event/<%= event._id %>/registrations" class="btn btn-info">View Registrations</a>
+                                <a href="/organizer/event/<%= event._id %>/registrations/export" class="btn btn-success">Export</a>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } else { %>
+                <div class="no-events">
+                    <h3>No events found</h3>
+                    <p>Try adjusting your search criteria or check back later for new events.</p>
+                </div>
+            <% } %>
+        </section>
+    </main>
+
+    <%- include('footer') %>
+    
+    <script>
+        // Handle search form submission
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const search = document.getElementById('search').value;
+            const organizer = document.getElementById('organizer').value;
+            
+            // Build query string
+            const params = new URLSearchParams();
+            if (search) params.append('search', search);
+            if (organizer) params.append('organizer', organizer);
+            
+            // Redirect with query parameters
+            const queryString = params.toString();
+            window.location.href = `/events${queryString ? '?' + queryString : ''}`;
+        });
+        
+        // Handle clear filters button
+        document.getElementById('clearFilters').addEventListener('click', function() {
+            document.getElementById('search').value = '';
+            document.getElementById('organizer').value = '';
+            window.location.href = '/events';
+        });
+        
+        // Populate form with existing query parameters
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('search')) {
+                document.getElementById('search').value = urlParams.get('search');
+            }
+            if (urlParams.has('organizer')) {
+                document.getElementById('organizer').value = urlParams.get('organizer');
+            }
+        });
+    </script>
+</body>
+</html>
