@@ -1,0 +1,2 @@
+# Campus Event Hub
+he Campus Event Hub is a dynamic, full-stack application designed to be the single source of truth for all student life, academic, and cultural events on a university campus.  It solves the common problem of fragmented event information (spread across emails, flyers, and club groups) by providing a centralized, streamlined platform for both organizers to manage events and students to discover and engage with them. Our goal is to boost student participation and simplify the event lifecycle.
